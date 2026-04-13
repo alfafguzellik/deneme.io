@@ -1,15 +1,5 @@
-function showServices(){
-document.getElementById("services").classList.remove("hidden");
-}
+function whatsappGit(){
+const mesaj = "Merhaba, Alfa Güzellik Merkezi için rezervasyon oluşturmak istiyorum.";
 
-function scrollToBooking(){
-document.getElementById("booking").scrollIntoView({behavior:"smooth"});
-}
-
-function openPage(type){
-window.location.href = type + ".html";
-}
-
-function rezervasyonAl(){
-alert("Rezervasyon alındı!");
+window.open("https://wa.me/905467741041?text=" + encodeURIComponent(mesaj), "_blank");
 }
