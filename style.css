@@ -1,0 +1,75 @@
+body {
+margin:0;
+font-family: 'Segoe UI', sans-serif;
+background: linear-gradient(to bottom, #fff, #fce4ec);
+}
+
+header {
+background: black;
+color: gold;
+padding: 25px;
+text-align:center;
+}
+
+h1 { margin:0; font-size:32px; }
+
+section {
+padding:50px 20px;
+text-align:center;
+}
+
+.services {
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:25px;
+}
+
+.card {
+background:white;
+border-radius:20px;
+padding:25px;
+box-shadow:0 10px 25px rgba(0,0,0,0.1);
+font-weight:bold;
+}
+
+.booking-box {
+max-width:400px;
+margin:auto;
+background:white;
+padding:30px;
+border-radius:20px;
+box-shadow:0 10px 25px rgba(0,0,0,0.15);
+}
+
+input, select {
+width:100%;
+padding:12px;
+margin:10px 0;
+border-radius:10px;
+border:1px solid #ccc;
+}
+
+button {
+width:100%;
+padding:15px;
+margin-top:10px;
+border:none;
+border-radius:12px;
+font-size:16px;
+cursor:pointer;
+}
+
+.primary {
+background: gold;
+}
+
+.whatsapp {
+background:#25D366;
+color:white;
+}
+
+footer {
+background:black;
+color:white;
+padding:20px;
+}
