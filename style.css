@@ -1,10 +1,10 @@
 body {
 margin:0;
 font-family:Arial;
-overflow:hidden; /* scroll kapalı */
+overflow:hidden;
 }
 
-/* HERO FULL SCREEN */
+/* FULL EKRAN */
 .overlay {
 background:url('https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9') no-repeat center/cover;
 height:100vh;
@@ -12,11 +12,12 @@ display:flex;
 flex-direction:column;
 justify-content:center;
 align-items:center;
-color:white;
 text-align:center;
+color:white;
 position:relative;
 }
 
+/* KARARTMA */
 .overlay::before {
 content:"";
 position:absolute;
@@ -29,20 +30,21 @@ background:rgba(0,0,0,0.7);
 position:relative;
 }
 
-/* GLOW */
+/* BAŞLIK */
 .glow {
 color:#ff0000;
 font-size:45px;
 text-shadow: 0 0 10px red, 0 0 20px red;
 }
 
-/* BUTTON */
+/* BUTON */
 .btn {
 margin-top:20px;
 padding:15px 40px;
 background:#ff0000;
 border:none;
 color:white;
+font-size:16px;
 cursor:pointer;
 transition:0.3s;
 }
@@ -52,3 +54,21 @@ background:white;
 color:red;
 }
 
+/* INSTAGRAM */
+.instagram-btn {
+position:absolute;
+top:20px;
+right:20px;
+background: linear-gradient(45deg, #feda75, #d62976, #962fbf);
+color:white;
+padding:10px 20px;
+border-radius:20px;
+text-decoration:none;
+font-size:14px;
+font-weight:bold;
+transition:0.3s;
+}
+
+.instagram-btn:hover {
+transform:scale(1.05);
+}
