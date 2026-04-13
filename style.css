@@ -1,12 +1,12 @@
 body {
 margin:0;
 font-family:Arial;
-background: url('https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9') no-repeat center/cover;
+background:black;
 }
 
 /* HERO */
 .overlay {
-background: rgba(0,0,0,0.85);
+background: url('https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9') no-repeat center/cover;
 height:100vh;
 display:flex;
 flex-direction:column;
@@ -14,6 +14,19 @@ justify-content:center;
 align-items:center;
 color:white;
 text-align:center;
+position:relative;
+}
+
+.overlay::before {
+content:"";
+position:absolute;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.7);
+}
+
+.overlay * {
+position:relative;
 }
 
 /* ANİMASYON */
@@ -49,10 +62,10 @@ color:#ff0000;
 
 /* HİZMETLER */
 .services {
-text-align:center;
-padding:50px;
 background:black;
 color:white;
+text-align:center;
+padding:80px 20px;
 }
 
 .service-box {
@@ -65,8 +78,8 @@ margin-top:30px;
 .service-card {
 padding:30px;
 border:1px solid red;
-cursor:pointer;
 transition:0.3s;
+cursor:pointer;
 }
 
 .service-card:hover {
@@ -77,21 +90,67 @@ transform:scale(1.05);
 
 /* YORUMLAR */
 .comments {
-background:#111;
+background:black;
 color:white;
-padding:50px;
+padding:80px 20px;
 text-align:center;
 }
 
-.comment-box {
-margin:20px auto;
-max-width:400px;
-padding:20px;
-border:1px solid red;
-animation: fadeIn 2s ease-in-out;
+.chat {
+max-width:600px;
+margin:auto;
+display:flex;
+flex-direction:column;
+gap:20px;
 }
 
-/* WHATSAPP SABİT */
+.bubble {
+padding:15px 20px;
+border-radius:20px;
+max-width:70%;
+position:relative;
+}
+
+/* SOL */
+.left {
+background:#222;
+align-self:flex-start;
+}
+
+.left::after {
+content:"";
+position:absolute;
+left:-10px;
+top:15px;
+border-width:10px;
+border-style:solid;
+border-color:transparent #222 transparent transparent;
+}
+
+/* SAĞ */
+.right {
+background:#ff0000;
+align-self:flex-end;
+}
+
+.right::after {
+content:"";
+position:absolute;
+right:-10px;
+top:15px;
+border-width:10px;
+border-style:solid;
+border-color:transparent transparent transparent #ff0000;
+}
+
+.bubble span {
+display:block;
+margin-top:5px;
+font-size:12px;
+opacity:0.7;
+}
+
+/* WHATSAPP */
 .whatsapp {
 position:fixed;
 bottom:20px;
@@ -104,8 +163,4 @@ border-radius:50%;
 text-decoration:none;
 box-shadow:0 0 10px rgba(0,0,0,0.3);
 z-index:999;
-}
-
-.whatsapp:hover {
-transform:scale(1.1);
 }
