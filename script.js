@@ -9,9 +9,21 @@ alert("Lütfen tüm alanları doldurun");
 return;
 }
 
-alert(`Rezervasyon alındı!
-${name} - ${service}
-${date} ${time}`);
+fetch("https://script.google.com/macros/s/AKfycbzRwYwl9BiE4SLTQ1vT4yx6fh73duU8eEk_zC5zcPZxdfTRNthrp7DuFjjwtjFC5F5gug/exec", {
+method: "POST",
+body: JSON.stringify({
+name: name,
+service: service,
+date: date,
+time: time
+})
+})
+.then(() => {
+alert("Rezervasyon başarıyla alındı!");
+})
+.catch(() => {
+alert("Bağlantı hatası oluştu!");
+});
 }
 
 function whatsappGonder(){
