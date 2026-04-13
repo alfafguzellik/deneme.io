@@ -120,3 +120,39 @@ font-size:12px;
 padding:8px 15px;
 }
 }
+/* GİRİŞ ANİMASYONU */
+.glow {
+opacity: 0;
+transform: translateY(-30px);
+animation: fadeUp 1.2s ease forwards;
+animation-delay: 0.3s;
+}
+
+.overlay p {
+opacity: 0;
+transform: translateY(20px);
+animation: fadeUp 1.2s ease forwards;
+animation-delay: 0.6s;
+}
+
+.btn {
+opacity: 0;
+transform: scale(0.8);
+animation: zoomIn 1s ease forwards;
+animation-delay: 1s;
+}
+
+/* ANIMATION KEYFRAMES */
+@keyframes fadeUp {
+to {
+opacity: 1;
+transform: translateY(0);
+}
+}
+
+@keyframes zoomIn {
+to {
+opacity: 1;
+transform: scale(1);
+}
+}
