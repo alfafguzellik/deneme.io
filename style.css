@@ -90,3 +90,28 @@ color:white;
 box-shadow: 0 0 10px red, 0 0 20px red;
 transform:scale(1.05);
 }
+/* KATMAN DÜZELTME */
+.overlay::before {
+z-index: 1;
+}
+
+.overlay h1,
+.overlay p,
+.overlay button {
+z-index: 2;
+}
+
+/* BUTONLAR ÜSTTE KALSIN */
+.instagram-btn,
+.map-btn {
+z-index: 3;
+}
+
+/* YAZILAR ARASI MESAFE */
+.overlay h1 {
+margin-bottom: 10px;
+}
+
+.overlay p {
+margin-bottom: 20px;
+}
