@@ -1,42 +1,111 @@
 body {
 margin:0;
-font-family:Arial, sans-serif;
-height:100vh;
+font-family:Arial;
 background: url('https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9') no-repeat center/cover;
 }
 
+/* HERO */
 .overlay {
-background: rgba(0,0,0,0.8);
+background: rgba(0,0,0,0.85);
 height:100vh;
 display:flex;
 flex-direction:column;
 justify-content:center;
 align-items:center;
-text-align:center;
 color:white;
+text-align:center;
 }
 
-h1 {
+/* ANİMASYON */
+.fade {
 color:#ff0000;
-font-size:40px;
-letter-spacing:2px;
+font-size:45px;
+animation: fadeIn 2s ease-in-out;
 }
 
-p {
-margin-bottom:30px;
+.fade2 {
+animation: fadeIn 3s ease-in-out;
 }
 
-button {
+@keyframes fadeIn {
+from {opacity:0; transform:translateY(-20px);}
+to {opacity:1; transform:translateY(0);}
+}
+
+.btn {
+margin-top:20px;
 padding:15px 40px;
-font-size:18px;
-border:none;
 background:#ff0000;
+border:none;
 color:white;
 cursor:pointer;
 transition:0.3s;
 }
 
-button:hover {
+.btn:hover {
 background:white;
 color:#ff0000;
+}
+
+/* HİZMETLER */
+.services {
+text-align:center;
+padding:50px;
+background:black;
+color:white;
+}
+
+.service-box {
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:20px;
+margin-top:30px;
+}
+
+.service-card {
+padding:30px;
+border:1px solid red;
+cursor:pointer;
+transition:0.3s;
+}
+
+.service-card:hover {
+background:red;
+color:black;
+transform:scale(1.05);
+}
+
+/* YORUMLAR */
+.comments {
+background:#111;
+color:white;
+padding:50px;
+text-align:center;
+}
+
+.comment-box {
+margin:20px auto;
+max-width:400px;
+padding:20px;
+border:1px solid red;
+animation: fadeIn 2s ease-in-out;
+}
+
+/* WHATSAPP SABİT */
+.whatsapp {
+position:fixed;
+bottom:20px;
+right:20px;
+background:#25D366;
+color:white;
+font-size:25px;
+padding:15px;
+border-radius:50%;
+text-decoration:none;
+box-shadow:0 0 10px rgba(0,0,0,0.3);
+z-index:999;
+}
+
+.whatsapp:hover {
+transform:scale(1.1);
 }
