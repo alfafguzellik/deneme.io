@@ -1,78 +1,12 @@
 <!DOCTYPE html>
+
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Alfa Güzellik Merkezi</title>
 
-<style>
-body {
-  margin:0;
-  font-family: 'Segoe UI', sans-serif;
-  background: linear-gradient(to bottom, #fff, #fce4ec);
-}
-
-header {
-  background: black;
-  color: gold;
-  padding: 25px;
-  text-align:center;
-}
-
-h1 { margin:0; font-size:32px; }
-
-section { padding:50px 20px; text-align:center; }
-
-.services {
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:25px;
-}
-
-.card {
-  background:white;
-  border-radius:20px;
-  padding:25px;
-  box-shadow:0 10px 25px rgba(0,0,0,0.1);
-  font-weight:bold;
-}
-
-.booking-box {
-  max-width:400px;
-  margin:auto;
-  background:white;
-  padding:30px;
-  border-radius:20px;
-  box-shadow:0 10px 25px rgba(0,0,0,0.15);
-}
-
-input, select {
-  width:100%;
-  padding:12px;
-  margin:10px 0;
-  border-radius:10px;
-  border:1px solid #ccc;
-}
-
-button {
-  width:100%;
-  padding:15px;
-  margin-top:10px;
-  border:none;
-  border-radius:12px;
-  font-size:16px;
-  cursor:pointer;
-}
-
-.primary { background:gold; }
-.whatsapp { background:#25D366; color:white; }
-
-footer {
-  background:black;
-  color:white;
-  padding:20px;
-}
-</style>
+<link rel="stylesheet" href="style.css">
 </head>
 
 <body>
@@ -96,8 +30,10 @@ footer {
 
 <section>
 <h2>Online Rezervasyon</h2>
+
 <div class="booking-box">
 <input type="text" id="name" placeholder="Adınız">
+
 <select id="service">
 <option>İpek Kirpik</option>
 <option>Ağda</option>
@@ -106,12 +42,14 @@ footer {
 <option>Saç</option>
 <option>Makyaj</option>
 </select>
+
 <input type="date" id="date">
 <input type="time" id="time">
 
-<button class="primary" onclick="rezervasyonAl()">Rezervasyon Oluştur</button>
-<button class="whatsapp" onclick="whatsappGonder()">WhatsApp ile Rezervasyon</button>
+<button onclick="rezervasyonAl()">Rezervasyon Oluştur</button> <button onclick="whatsappGonder()">WhatsApp ile Rezervasyon</button>
+
 </div>
+
 </section>
 
 <footer>
@@ -119,32 +57,7 @@ footer {
 <p>Instagram: @alfaguzellik</p>
 </footer>
 
-<script>
-function rezervasyonAl(){
-  const name = document.getElementById('name').value;
-  const service = document.getElementById('service').value;
-  const date = document.getElementById('date').value;
-  const time = document.getElementById('time').value;
-
-  if(!name || !date || !time){
-    alert("Lütfen tüm alanları doldurun");
-    return;
-  }
-
-  alert(`Rezervasyon alındı!\n${name} - ${service}\n${date} ${time}`);
-}
-
-function whatsappGonder(){
-  const name = document.getElementById('name').value;
-  const service = document.getElementById('service').value;
-  const date = document.getElementById('date').value;
-  const time = document.getElementById('time').value;
-
-  const mesaj = `Merhaba, rezervasyon oluşturmak istiyorum:%0AAd: ${name}%0AHizmet: ${service}%0ATarih: ${date}%0ASaat: ${time}`;
-
-  window.open(`https://wa.me/905000000000?text=${mesaj}`, '_blank');
-}
-</script>
+<script src="script.js"></script>
 
 </body>
 </html>
