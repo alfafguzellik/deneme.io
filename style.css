@@ -95,7 +95,7 @@ box-shadow: 0 0 10px red, 0 0 20px red;
 transform:scale(1.05);
 }
 
-/* 📱 MOBİL UYUMLU KISIM */
+/* 📱 MOBİL FIX (EN KRİTİK) */
 @media (max-width: 768px) {
 
 .glow {
@@ -111,20 +111,12 @@ padding:12px 30px;
 font-size:14px;
 }
 
-/* butonları alta al */
-.instagram-btn {
-top:auto;
-bottom:20px;
-right:10px;
-font-size:12px;
-padding:8px 15px;
+/* BUTONLAR ALT ALTA VE ORTALI */
+.instagram-btn,
+.map-btn {
+position: static;
+display: block;
+margin: 5px auto;
 }
 
-.map-btn {
-top:auto;
-bottom:20px;
-left:10px;
-font-size:12px;
-padding:8px 15px;
-}
 }
