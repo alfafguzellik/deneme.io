@@ -5,57 +5,45 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Alfa Güzellik Merkezi</title>
-
 <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<header>
-<h1>Alfa Güzellik Merkezi</h1>
-<p>Lüks Güzelliğin Adresi</p>
+<header class="hero">
+  <h1>ALFA GÜZELLİK</h1>
+  <p>Lüks Güzelliğin Adresi</p>
+
+  <div class="buttons">
+    <button onclick="scrollToBooking()">Hemen Randevu Al</button>
+    <button onclick="showServices()">Hizmetlerimiz</button>
+  </div>
 </header>
 
-<section>
-<h2>Hizmetlerimiz</h2>
-<div class="services">
-<div class="card">İpek Kirpik</div>
-<div class="card">Ağda</div>
-<div class="card">Tırnak</div>
-<div class="card">Gelin Saçı</div>
-<div class="card">Saç Tasarım</div>
-<div class="card">Makyaj</div>
-</div>
+<!-- HİZMETLER -->
+
+<section id="services" class="hidden">
+  <h2>Hizmetlerimiz</h2>
+
+  <div class="service-grid">
+    <div class="card" onclick="openPage('hair')">Kuaför</div>
+    <div class="card" onclick="openPage('wax')">Ağda</div>
+    <div class="card" onclick="openPage('beauty')">Güzellik</div>
+  </div>
 </section>
 
-<section>
-<h2>Online Rezervasyon</h2>
+<!-- RANDEVU -->
 
-<div class="booking-box">
-<input type="text" id="name" placeholder="Adınız">
+<section id="booking">
+  <h2>Rezervasyon</h2>
 
-<select id="service">
-<option>İpek Kirpik</option>
-<option>Ağda</option>
-<option>Tırnak</option>
-<option>Gelin Saçı</option>
-<option>Saç</option>
-<option>Makyaj</option>
-</select>
+  <input type="text" id="name" placeholder="Adınız">
+  <input type="date" id="date">
+  <input type="time" id="time">
 
-<input type="date" id="date">
-<input type="time" id="time">
-
-<button onclick="rezervasyonAl()">Rezervasyon Oluştur</button> <button onclick="whatsappGonder()">WhatsApp ile Rezervasyon</button>
-
-</div>
+<button onclick="rezervasyonAl()">Rezervasyon Oluştur</button>
 
 </section>
-
-<footer>
-<p>Telefon: +905000000000</p>
-<p>Instagram: @alfaguzellik</p>
-</footer>
 
 <script src="script.js"></script>
 
