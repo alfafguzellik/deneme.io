@@ -76,12 +76,11 @@ transition:0.3s;
 z-index:3;
 }
 
-/* SAĞ */
+/* DESKTOP KONUM */
 .instagram-btn {
 right:20px;
 }
 
-/* SOL */
 .map-btn {
 left:20px;
 }
@@ -95,7 +94,7 @@ box-shadow: 0 0 10px red, 0 0 20px red;
 transform:scale(1.05);
 }
 
-/* 📱 MOBİL FIX (EN KRİTİK) */
+/* 📱 MOBİL: SAĞ ÜST ALT ALTA */
 @media (max-width: 768px) {
 
 .glow {
@@ -111,12 +110,22 @@ padding:12px 30px;
 font-size:14px;
 }
 
-/* BUTONLAR ALT ALTA VE ORTALI */
+/* İKİSİNİ DE SAĞ ÜSTE AL */
 .instagram-btn,
 .map-btn {
-position: static;
-display: block;
-margin: 5px auto;
+left:auto;
+right:10px;
+position:absolute;
+display:block;
+}
+
+/* ALT ALTA DİZ */
+.map-btn {
+top:20px;
+}
+
+.instagram-btn {
+top:60px;
 }
 
 }
