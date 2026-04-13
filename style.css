@@ -24,6 +24,7 @@ position:absolute;
 width:100%;
 height:100%;
 background:rgba(0,0,0,0.7);
+z-index:1;
 }
 
 .overlay * {
@@ -35,9 +36,10 @@ position:relative;
 color:#ff0000;
 font-size:45px;
 text-shadow: 0 0 10px red, 0 0 20px red;
+z-index:2;
 }
 
-/* BUTON (OVAL) */
+/* BUTON */
 .btn {
 margin-top:20px;
 padding:15px 40px;
@@ -48,6 +50,7 @@ font-size:16px;
 cursor:pointer;
 transition:0.3s;
 border-radius:50px;
+z-index:2;
 }
 
 .btn:hover {
@@ -55,7 +58,7 @@ background:white;
 color:red;
 }
 
-/* INSTAGRAM + KONUM AYNI TASARIM */
+/* INSTAGRAM + KONUM */
 .instagram-btn,
 .map-btn {
 position:absolute;
@@ -70,6 +73,7 @@ font-size:14px;
 font-weight:bold;
 backdrop-filter: blur(5px);
 transition:0.3s;
+z-index:3;
 }
 
 /* SAĞ */
@@ -90,28 +94,37 @@ color:white;
 box-shadow: 0 0 10px red, 0 0 20px red;
 transform:scale(1.05);
 }
-/* KATMAN DÜZELTME */
-.overlay::before {
-z-index: 1;
-}
 
-.overlay h1,
-.overlay p,
-.overlay button {
-z-index: 2;
-}
+/* 📱 MOBİL UYUMLU KISIM */
+@media (max-width: 768px) {
 
-/* BUTONLAR ÜSTTE KALSIN */
-.instagram-btn,
-.map-btn {
-z-index: 3;
-}
-
-/* YAZILAR ARASI MESAFE */
-.overlay h1 {
-margin-bottom: 10px;
+.glow {
+font-size:28px;
 }
 
 .overlay p {
-margin-bottom: 20px;
+font-size:14px;
+}
+
+.btn {
+padding:12px 30px;
+font-size:14px;
+}
+
+/* butonları alta al */
+.instagram-btn {
+top:auto;
+bottom:20px;
+right:10px;
+font-size:12px;
+padding:8px 15px;
+}
+
+.map-btn {
+top:auto;
+bottom:20px;
+left:10px;
+font-size:12px;
+padding:8px 15px;
+}
 }
