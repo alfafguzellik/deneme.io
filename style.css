@@ -1,50 +1,68 @@
 body {
 margin:0;
-font-family: Arial;
-background: linear-gradient(to bottom, #fff, #fce4ec);
+font-family:Arial;
+background:black;
+color:white;
 }
 
-header {
-background:black;
-color:gold;
-padding:25px;
+.hero {
+height:100vh;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
 text-align:center;
+background:url('https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9') no-repeat center/cover;
+}
+
+.hero h1 {
+font-size:50px;
+color:gold;
+}
+
+.buttons button {
+margin:10px;
+padding:15px 30px;
+border:none;
+background:gold;
+color:black;
+cursor:pointer;
 }
 
 section {
-padding:40px;
+padding:50px;
 text-align:center;
 }
 
-.services {
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+.service-grid {
+display:flex;
+justify-content:center;
 gap:20px;
 }
 
 .card {
-background:white;
-padding:20px;
-border-radius:15px;
+padding:40px;
+border:1px solid gold;
+cursor:pointer;
+transition:0.3s;
 }
 
-.booking-box {
-max-width:400px;
-margin:auto;
+.card:hover {
+background:gold;
+color:black;
 }
 
-input, select {
-width:100%;
+.hidden {
+display:none;
+}
+
+input {
+display:block;
+margin:10px auto;
 padding:10px;
-margin:10px 0;
+width:200px;
 }
 
 button {
-width:100%;
-padding:15px;
-margin-top:10px;
-border:none;
-background:black;
-color:white;
-cursor:pointer;
+padding:10px 20px;
 }
