@@ -2,43 +2,69 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<title>Tane Kuruyemiş</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tane Kuruyemiş</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
-body{background:#f8f8f8}
+body{background:#f4f6f5}
 
 /* HEADER */
 header{
  background:linear-gradient(135deg,#1b5e20,#2e7d32);
- color:#fff;
- padding:20px;
+ padding:15px;
  display:flex;
  justify-content:space-between;
  align-items:center;
+ color:#fff;
 }
 
 .logo{display:flex;align-items:center;gap:10px}
-.logo img{width:55px;height:55px;border-radius:50%;border:3px solid #fff}
-.insta{background:#fff;color:#1b5e20;padding:8px 12px;border-radius:20px;text-decoration:none}
+.logo img{width:50px;height:50px;border-radius:50%;border:2px solid #fff}
 
-/* FİLTRE ALANI */
+/* INSTAGRAM (SAĞ ALT) */
+.insta{
+ position:fixed;
+ bottom:20px;
+ left:20px;
+ background:#E1306C;
+ color:#fff;
+ padding:12px 16px;
+ border-radius:30px;
+ text-decoration:none;
+ font-size:14px;
+ z-index:999;
+ box-shadow:0 5px 15px rgba(0,0,0,0.3);
+}
+
+/* SEPET (SAĞ ÜST) */
+.cart{
+ position:fixed;
+ top:20px;
+ right:20px;
+ background:#000;
+ color:#fff;
+ padding:12px 18px;
+ border-radius:30px;
+ cursor:pointer;
+ z-index:999;
+}
+
+/* FILTERS */
 .filters{
  padding:15px;
- display:grid;
- grid-template-columns:1fr 1fr 1fr 1fr;
- gap:10px;
 }
 
-.filters input, .filters select{
- padding:10px;
- border-radius:10px;
- border:1px solid #ccc;
- width:100%;
+/* SLIDER */
+.range{
+ display:flex;
+ flex-direction:column;
+ gap:5px;
 }
+
+.range input{width:100%}
 
 /* GRID */
 .products{
@@ -55,8 +81,9 @@ header{
  box-shadow:0 10px 25px rgba(0,0,0,0.1);
  position:relative;
 }
-.card img{width:100%;height:180px;object-fit:cover}
+.card img{width:100%;height:170px;object-fit:cover}
 .card-content{padding:15px}
+.price{color:#2e7d32;font-weight:bold}
 
 .badge{
  position:absolute;
@@ -64,7 +91,8 @@ header{
  left:10px;
  background:red;
  color:#fff;
- padding:4px 8px;
+ padding:3px 7px;
+ font-size:12px;
  border-radius:6px;
 }
 
@@ -75,22 +103,11 @@ button{
  border-radius:8px;
  background:#2e7d32;
  color:#fff;
- margin-top:10px;
+ margin-top:8px;
  cursor:pointer;
 }
 
-/* SEPET */
-.cart{
- position:fixed;
- bottom:20px;
- right:20px;
- background:#000;
- color:#fff;
- padding:12px 18px;
- border-radius:30px;
- cursor:pointer;
-}
-
+/* CART PANEL */
 .panel{
  position:fixed;
  bottom:0;
@@ -110,26 +127,25 @@ button{
 <img src="logo.png">
 <b>Tane Kuruyemiş</b>
 </div>
-<a class="insta" href="https://www.instagram.com/taneduragi/" target="_blank">Instagram</a>
 </header>
 
-<!-- FİLTRE -->
+<a class="insta" href="https://www.instagram.com/taneduragi/" target="_blank">Instagram</a>
+
+<div class="cart" onclick="toggleCart()">🛒 (<span id="count">0</span>)</div>
+
+<!-- FILTER -->
 <div class="filters">
-<input type="text" id="search" placeholder="Ürün ara..." onkeyup="filterProducts()">
-<select id="category" onchange="filterProducts()">
-<option value="">Kategori</option>
-<option value="fistik">Fıstık</option>
-<option value="badem">Badem</option>
-<option value="findik">Fındık</option>
-<option value="kaju">Kaju</option>
-</select>
-<input type="number" id="min" placeholder="Min ₺" onkeyup="filterProducts()">
-<input type="number" id="max" placeholder="Max ₺" onkeyup="filterProducts()">
+<input id="search" placeholder="Ürün ara..." onkeyup="filterProducts()">
+
+<div class="range">
+<label>Fiyat: <span id="minVal">0</span>₺ - <span id="maxVal">200</span>₺</label>
+<input type="range" id="minRange" min="0" max="200" value="0" oninput="filterProducts()">
+<input type="range" id="maxRange" min="0" max="200" value="200" oninput="filterProducts()">
+</div>
+
 </div>
 
 <div class="products" id="products"></div>
-
-<div class="cart" onclick="toggleCart()">🛒 (<span id="count">0</span>)</div>
 
 <div class="panel" id="cartPanel">
 <h3>Sepet</h3>
@@ -141,15 +157,15 @@ button{
 <script>
 
 const products = [
- {name:"Antep Fıstığı",price:150,cat:"fistik",img:"https://i.imgur.com/8Km9tLL.jpg"},
- {name:"Badem",price:120,cat:"badem",img:"https://i.imgur.com/j6y7s3x.jpg"},
- {name:"Fındık",price:130,cat:"findik",img:"https://i.imgur.com/5Aqgz7o.jpg"},
- {name:"Kaju",price:140,cat:"kaju",img:"https://i.imgur.com/2nCt3Sb.jpg"}
+ {name:"Antep Fıstığı",price:150,img:"https://i.imgur.com/8Km9tLL.jpg"},
+ {name:"Badem",price:120,img:"https://i.imgur.com/j6y7s3x.jpg"},
+ {name:"Fındık",price:130,img:"https://i.imgur.com/5Aqgz7o.jpg"},
+ {name:"Kaju",price:140,img:"https://i.imgur.com/2nCt3Sb.jpg"}
 ];
 
 let cart=[];
 
-// ÜRÜN YÜKLE
+// LOAD
 function loadProducts(list=products){
  let html="";
  list.forEach(p=>{
@@ -159,7 +175,7 @@ function loadProducts(list=products){
     <img src="${p.img}">
     <div class="card-content">
       <h3>${p.name}</h3>
-      <p>${p.price}₺</p>
+      <div class="price">${p.price}₺</div>
       <button onclick="addToCart('${p.name}',${p.price})">Sepete ekle</button>
     </div>
   </div>`;
@@ -167,32 +183,31 @@ function loadProducts(list=products){
  document.getElementById("products").innerHTML=html;
 }
 
-// 🔥 FİLTRE SİSTEMİ
+// FILTER
 function filterProducts(){
- let search = document.getElementById("search").value.toLowerCase();
- let cat = document.getElementById("category").value;
- let min = document.getElementById("min").value;
- let max = document.getElementById("max").value;
+ let s=search.value.toLowerCase();
+ let minv=parseInt(minRange.value);
+ let maxv=parseInt(maxRange.value);
+
+ document.getElementById("minVal").innerText=minv;
+ document.getElementById("maxVal").innerText=maxv;
 
  let filtered = products.filter(p=>{
-  return p.name.toLowerCase().includes(search) &&
-         (cat==="" || p.cat===cat) &&
-         (min==="" || p.price >= min) &&
-         (max==="" || p.price <= max);
+  return p.name.toLowerCase().includes(s) &&
+         p.price>=minv && p.price<=maxv;
  });
 
  loadProducts(filtered);
 }
 
-// 🛒
+// CART
 function addToCart(name,price){
  cart.push({name,price});
- document.getElementById("count").innerText=cart.length;
+ count.innerText=cart.length;
 }
 
 function toggleCart(){
- let p=document.getElementById("cartPanel");
- p.style.display = p.style.display==="block"?"none":"block";
+ cartPanel.style.display = cartPanel.style.display==="block"?"none":"block";
  renderCart();
 }
 
@@ -203,17 +218,17 @@ function renderCart(){
   total+=i.price;
   html+=`<div>${i.name} - ${i.price}₺</div>`;
  });
- document.getElementById("cartItems").innerHTML=html;
+ cartItems.innerHTML=html;
  document.getElementById("total").innerText="Toplam: "+total+"₺";
 }
 
 function sendWhatsApp(){
- let text="Sipariş:\\n";
+ let text="Sipariş:%0A";
  cart.forEach(i=>{
-  text+=i.name+" - "+i.price+"₺\\n";
+  text+=`${i.name} - ${i.price}₺%0A`;
  });
  text+="Toplam: "+cart.reduce((a,b)=>a+b.price,0)+"₺";
- window.open("https://wa.me/905330126971?text="+encodeURIComponent(text));
+ window.open("https://wa.me/905330126971?text="+text);
 }
 
 loadProducts();
