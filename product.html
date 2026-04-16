@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Ürün</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{font-family:sans-serif;padding:20px}
+img{width:100%;border-radius:10px}
+button{width:100%;padding:12px;background:green;color:#fff;border:none;margin-top:10px}
+</style>
+</head>
+<body>
+
+<div onclick="back()">← Geri</div>
+
+<img id="img">
+<h2 id="name"></h2>
+<p id="desc"></p>
+<h3 id="price"></h3>
+
+<button onclick="addCart()">Sepete ekle</button>
+
+<script>
+const products=[
+{id:0,name:"Antep Fıstığı",price:150,img:"https://i.imgur.com/8Km9tLL.jpg",desc:"Taze fıstık"},
+{id:1,name:"Badem",price:120,img:"https://i.imgur.com/j6y7s3x.jpg",desc:"Doğal badem"}
+];
+
+let id=localStorage.getItem("product");
+let p=products[id];
+
+img.src=p.img;
+name.innerText=p.name;
+desc.innerText=p.desc;
+price.innerText=p.price+"₺";
+
+function addCart(){
+ let cart=JSON.parse(localStorage.getItem("cart"))||[];
+ cart.push(p);
+ localStorage.setItem("cart",JSON.stringify(cart));
+ alert("Sepete eklendi");
+}
+
+function back(){
+ window.location="index.html";
+}
+</script>
+
+</body>
+</html>
