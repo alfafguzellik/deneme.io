@@ -4,10 +4,45 @@
 <meta charset="UTF-8">
 <title>Sepet</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <style>
-body{font-family:sans-serif;padding:20px}
-button{padding:10px;background:green;color:#fff;border:none;margin-top:10px;width:100%}
+
+body{
+ font-family:sans-serif;
+ padding:15px;
+ background:#f4f4f4;
+ margin:0;
+}
+
+.item{
+ background:#fff;
+ padding:10px;
+ border-radius:10px;
+ margin-bottom:10px;
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+}
+
+button{
+ padding:10px;
+ background:#2e7d32;
+ color:#fff;
+ border:none;
+ margin-top:10px;
+ width:100%;
+ border-radius:8px;
+}
+
+.remove{
+ background:red;
+ padding:5px 10px;
+ border-radius:5px;
+ cursor:pointer;
+}
+
 </style>
+
 </head>
 <body>
 
@@ -22,27 +57,51 @@ button{padding:10px;background:green;color:#fff;border:none;margin-top:10px;widt
 
 let cart=JSON.parse(localStorage.getItem("cart"))||[];
 
-let html="";
-let total=0;
+function render(){
+ let html="";
+ let total=0;
 
-cart.forEach(p=>{
- total+=p.price;
- html+=`<div>${p.name} - ${p.price}₺</div>`;
-});
+ cart.forEach((p,i)=>{
+  total+=p.price;
+  html+=`
+  <div class="item">
+   <div>${p.name} - ${p.price}₺</div>
+   <div class="remove" onclick="removeItem(${i})">Sil</div>
+  </div>`;
+ });
 
-list.innerHTML=html;
-totalEl.innerText="Toplam: "+total+"₺";
+ list.innerHTML=html;
+ totalEl.innerText="Toplam: "+total+"₺";
+}
+
+function removeItem(i){
+ cart.splice(i,1);
+ localStorage.setItem("cart",JSON.stringify(cart));
+
+ // SENKRON
+ localStorage.setItem("cart_sync",Date.now());
+
+ render();
+}
 
 function order(){
  let text="Sipariş:%0A";
+ let total=0;
+
  cart.forEach(p=>{
+  total+=p.price;
   text+=p.name+" - "+p.price+"₺%0A";
  });
+
  text+="Toplam: "+total+"₺";
+
  window.open("https://wa.me/905330126971?text="+text);
 }
 
 const totalEl=document.getElementById("total");
+const list=document.getElementById("list");
+
+render();
 
 </script>
 
