@@ -2,235 +2,119 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Araç Kiralama Pro</title>
+<title>Rent Pro</title>
 
 <style>
-body { font-family: Arial; margin:0; background:#f4f4f4; }
-header { background:#222; color:#fff; padding:20px; text-align:center; }
-
-.container { padding:20px; }
-
-.cars {
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-  gap:20px;
-}
-
-.car {
-  background:#fff;
-  padding:15px;
-  border-radius:10px;
-  box-shadow:0 5px 15px rgba(0,0,0,0.1);
-}
-
-.car img {
-  width:100%;
-  height:160px;
-  object-fit:cover;
-  border-radius:10px;
-}
-
-input, select, button {
-  width:100%;
-  padding:10px;
-  margin:10px 0;
-}
-
-button {
-  background:#28a745;
-  color:white;
-  border:none;
-  cursor:pointer;
-}
-
-button:hover { background:#218838; }
-
-.form, .history {
-  background:#fff;
-  padding:20px;
-  border-radius:10px;
-  margin-top:20px;
-}
-
-.deleteBtn {
-  background:red;
-  margin-top:5px;
-}
+body {font-family:Arial;background:#f4f4f4;padding:20px;}
+.box {background:#fff;padding:20px;margin:10px;border-radius:10px;}
+img {width:100%;height:150px;object-fit:cover;}
+button {padding:10px;margin-top:5px;}
 </style>
 </head>
 
 <body>
 
-<header>
-  <h1>🚗 Araç Kiralama Pro</h1>
-</header>
+<h1>🚗 Rent Pro</h1>
 
-<div class="container">
+<div class="box">
+<h2>Login</h2>
+<input id="user" placeholder="kullanıcı">
+<input id="pass" placeholder="şifre">
+<button onclick="login()">Giriş</button>
+</div>
 
+<div id="adminPanel" class="box" style="display:none;">
+<h2>Admin Panel</h2>
+
+<input id="carName" placeholder="Araç adı">
+<input id="carPrice" placeholder="Fiyat">
+<input id="carImg" placeholder="Resim URL">
+
+<button onclick="addCar()">Araç Ekle</button>
+</div>
+
+<div class="box">
 <h2>Araçlar</h2>
-
-<!-- 🔍 ARAMA -->
-<input type="text" placeholder="Araç ara..." onkeyup="searchCar(this.value)">
-
-<!-- 💰 FİLTRE -->
-<select onchange="filterCars(this.value)">
-  <option value="default">Sırala</option>
-  <option value="asc">Ucuz → Pahalı</option>
-  <option value="desc">Pahalı → Ucuz</option>
-</select>
-
-<div class="cars" id="carList"></div>
-
-<div class="form">
-<h2>Kiralama</h2>
-<input type="text" id="name" placeholder="Adınız">
-<select id="carSelect"></select>
-<input type="date" id="startDate">
-<input type="date" id="endDate">
-<button onclick="rentCar()">Kirala</button>
-<p id="result"></p>
-</div>
-
-<div class="history">
-<h2>Geçmiş</h2>
-
-<!-- 📅 TARİH FİLTRE -->
-<input type="date" onchange="filterHistory(this.value)">
-
-<ul id="historyList"></ul>
-</div>
-
+<div id="cars"></div>
 </div>
 
 <script>
-let cars = [
-  {id:1,name:"Renault Clio",price:700,img:"https://source.unsplash.com/400x300/?renault-clio"},
-  {id:2,name:"Fiat Egea",price:750,img:"https://source.unsplash.com/400x300/?fiat-egea"},
-  {id:3,name:"Hyundai i20",price:720,img:"https://source.unsplash.com/400x300/?hyundai-i20"},
-  {id:4,name:"Toyota Corolla",price:900,img:"https://source.unsplash.com/400x300/?toyota-corolla"},
-  {id:5,name:"Volkswagen Polo",price:800,img:"https://source.unsplash.com/400x300/?vw-polo"},
-  {id:6,name:"Dacia Sandero",price:650,img:"https://source.unsplash.com/400x300/?dacia-sandero"}
-];
+let currentUser=null;
 
-const carList = document.getElementById("carList");
-const carSelect = document.getElementById("carSelect");
+// 🔐 LOGIN
+async function login(){
+  const res = await fetch("/login",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({
+      username:user.value,
+      password:pass.value
+    })
+  });
 
-// ARAÇ BAS
-function renderCars(list){
-  carList.innerHTML="";
-  carSelect.innerHTML="";
+  const data = await res.text();
 
-  list.forEach(car=>{
-    carList.innerHTML+=`
-      <div class="car">
-        <img src="${car.img}">
-        <h3>${car.name}</h3>
-        <p>${car.price} TL / gün</p>
+  if(data==="Hatalı giriş"){
+    alert("Yanlış!");
+    return;
+  }
+
+  currentUser = JSON.parse(data);
+
+  if(currentUser.role==="admin"){
+    adminPanel.style.display="block";
+  }
+
+  loadCars();
+}
+
+// 🚗 ARAÇLARI GETİR
+async function loadCars(){
+  const res = await fetch("/cars");
+  const cars = await res.json();
+
+  carsDiv = document.getElementById("cars");
+  carsDiv.innerHTML="";
+
+  cars.forEach(c=>{
+    carsDiv.innerHTML+=`
+      <div class="box">
+        <img src="${c.img}">
+        <h3>${c.name}</h3>
+        <p>${c.price} TL</p>
+        ${currentUser?.role==="admin" ?
+          `<button onclick="deleteCar('${c._id}')">Sil</button>` : ""}
       </div>
     `;
-
-    carSelect.innerHTML+=`
-      <option value="${car.id}">${car.name}</option>
-    `;
   });
 }
 
-// 🔍 ARAMA
-function searchCar(text){
-  const filtered = cars.filter(c =>
-    c.name.toLowerCase().includes(text.toLowerCase())
-  );
-  renderCars(filtered);
-}
-
-// 💰 FİLTRE
-function filterCars(type){
-  let sorted=[...cars];
-
-  if(type==="asc") sorted.sort((a,b)=>a.price-b.price);
-  if(type==="desc") sorted.sort((a,b)=>b.price-a.price);
-
-  renderCars(sorted);
-}
-
-// 🚗 KİRALAMA
-function rentCar(){
-  const name=document.getElementById("name").value;
-  const carId=carSelect.value;
-  const start=document.getElementById("startDate").value;
-  const end=document.getElementById("endDate").value;
-
-  if(!name||!start||!end){
-    document.getElementById("result").innerText="Alanları doldur!";
-    return;
-  }
-
-  const car=cars.find(c=>c.id==carId);
-  const days=(new Date(end)-new Date(start))/(1000*60*60*24);
-
-  if(days<=0){
-    document.getElementById("result").innerText="Tarih hatalı!";
-    return;
-  }
-
-  const total=days*car.price;
-
-  let history=JSON.parse(localStorage.getItem("rentals"))||[];
-
-  history.push({
-    id:Date.now(),
-    name,
-    car:car.name,
-    start,
-    end,
-    total
+// ➕ EKLE
+async function addCar(){
+  await fetch("/add-car",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({
+      name:carName.value,
+      price:carPrice.value,
+      img:carImg.value
+    })
   });
 
-  localStorage.setItem("rentals",JSON.stringify(history));
-
-  document.getElementById("result").innerText=`Toplam: ${total} TL`;
-
-  loadHistory();
+  loadCars();
 }
 
-// 📜 GEÇMİŞ YÜKLE
-function loadHistory(filterDate=null){
-  const historyList=document.getElementById("historyList");
-  historyList.innerHTML="";
-
-  let history=JSON.parse(localStorage.getItem("rentals"))||[];
-
-  if(filterDate){
-    history=history.filter(h=>h.start===filterDate);
-  }
-
-  history.forEach(item=>{
-    historyList.innerHTML+=`
-      <li>
-        ${item.name} - ${item.car} (${item.start} → ${item.end}) - ${item.total} TL
-        <button class="deleteBtn" onclick="deleteRental(${item.id})">Sil</button>
-      </li>
-    `;
+// ❌ SİL
+async function deleteCar(id){
+  await fetch("/delete-car",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({id})
   });
+
+  loadCars();
 }
 
-// ❌ SİLME
-function deleteRental(id){
-  let history=JSON.parse(localStorage.getItem("rentals"))||[];
-  history=history.filter(h=>h.id!==id);
-  localStorage.setItem("rentals",JSON.stringify(history));
-  loadHistory();
-}
-
-// 📅 TARİH FİLTRE
-function filterHistory(date){
-  loadHistory(date);
-}
-
-// INIT
-renderCars(cars);
-loadHistory();
 </script>
 
 </body>
