@@ -2,119 +2,118 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<title>Rent Pro</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tane Durağı - Doğal Çerezler</title>
 <style>
-body {font-family:Arial;background:#f4f4f4;padding:20px;}
-.box {background:#fff;padding:20px;margin:10px;border-radius:10px;}
-img {width:100%;height:150px;object-fit:cover;}
-button {padding:10px;margin-top:5px;}
+body {margin:0;font-family:Arial, sans-serif;background:#fff7f0;color:#333;}
+header {background:#8b4513;color:white;padding:20px;text-align:center;}
+nav a {color:white;margin:0 15px;text-decoration:none;font-weight:bold;}
+.hero {padding:60px;text-align:center;background:#f4e1d2;}
+.hero h1 {font-size:40px;margin-bottom:10px;}
+.section {padding:40px;text-align:center;}
+.products {display:flex;gap:20px;justify-content:center;flex-wrap:wrap;}
+.card {background:white;padding:20px;border-radius:15px;box-shadow:0 4px 10px rgba(0,0,0,0.1);width:250px;}
+button {background:#8b4513;color:white;border:none;padding:10px 15px;border-radius:8px;cursor:pointer;}
+footer {background:#8b4513;color:white;text-align:center;padding:20px;margin-top:40px;}
+.whatsapp {position:fixed;bottom:20px;right:20px;background:#25D366;color:white;padding:15px 20px;border-radius:50px;text-decoration:none;font-weight:bold;}
+.reviews {overflow:hidden;white-space:nowrap;}
+.review-track {display:inline-block;animation:scroll 20s linear infinite;}
+.review {display:inline-block;background:#fff;padding:15px;margin:10px;border-radius:10px;box-shadow:0 2px 5px rgba(0,0,0,0.1);} 
+.cart {position:fixed;top:20px;right:20px;background:white;padding:15px;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,0.2);width:250px;}
+input {padding:10px;margin:5px;width:90%;}
+@keyframes scroll {0% {transform: translateX(0);}100% {transform: translateX(-50%);}}
 </style>
 </head>
-
 <body>
 
-<h1>🚗 Rent Pro</h1>
+<header>
+<h1>Tane Durağı</h1>
+<nav>
+<a href="#">Ana Sayfa</a>
+<a href="#urunler">Ürünler</a>
+<a href="#yorumlar">Yorumlar</a>
+<a href="#odeme">Ödeme</a>
+</nav>
+</header>
 
-<div class="box">
-<h2>Login</h2>
-<input id="user" placeholder="kullanıcı">
-<input id="pass" placeholder="şifre">
-<button onclick="login()">Giriş</button>
+<div class="cart">
+<h3>Sepet</h3>
+<ul id="cart-list"></ul>
+<p><b>Toplam: <span id="total">0</span>₺</b></p>
 </div>
 
-<div id="adminPanel" class="box" style="display:none;">
-<h2>Admin Panel</h2>
+<section class="hero">
+<h1>Doğal ve Taptaze Çerezler</h1>
+<p>En kaliteli kuruyemişler kapınıza kadar geliyor</p>
+</section>
 
-<input id="carName" placeholder="Araç adı">
-<input id="carPrice" placeholder="Fiyat">
-<input id="carImg" placeholder="Resim URL">
-
-<button onclick="addCar()">Araç Ekle</button>
+<section id="urunler" class="section">
+<h2>Ürünlerimiz</h2>
+<div class="products">
+<div class="card"><h3>Kaju</h3><p>150₺</p><button onclick="addToCart('Kaju',150)">Sepete Ekle</button></div>
+<div class="card"><h3>Badem</h3><p>120₺</p><button onclick="addToCart('Badem',120)">Sepete Ekle</button></div>
+<div class="card"><h3>Fındık</h3><p>100₺</p><button onclick="addToCart('Fındık',100)">Sepete Ekle</button></div>
 </div>
+</section>
 
-<div class="box">
-<h2>Araçlar</h2>
-<div id="cars"></div>
+<section id="yorumlar" class="section">
+<h2>Müşteri Yorumları</h2>
+<div class="reviews">
+<div class="review-track">
+<div class="review">Siparişim çok hızlı geldi!</div>
+<div class="review">Karagolarım elime ulaştı!</div>
+<div class="review">Ürünler aşırı taze.</div>
+<div class="review">Tekrar sipariş veriyorum.</div>
+<div class="review">Paketleme çok iyiydi.</div>
+<div class="review">Siparişim çok hızlı geldi!</div>
+<div class="review">Karagolarım elime ulaştı!</div>
 </div>
+</div>
+</section>
+
+<section id="odeme" class="section">
+<h2>Ödeme</h2>
+<input placeholder="Ad Soyad">
+<input placeholder="Adres">
+<input placeholder="Telefon">
+<br>
+<button onclick="checkout()">Siparişi Tamamla</button>
+</section>
+
+<section class="section">
+<h2>İletişim</h2>
+<p>Instagram: <a href="https://www.instagram.com/taneduragi/" target="_blank">@taneduragi</a></p>
+<p>WhatsApp: <a href="https://wa.me/905330126971" target="_blank">0533 012 6971</a></p>
+</section>
+
+<a class="whatsapp" href="https://wa.me/905330126971" target="_blank">WhatsApp</a>
+
+<footer>
+<p>© 2026 Tane Durağı</p>
+</footer>
 
 <script>
-let currentUser=null;
-
-// 🔐 LOGIN
-async function login(){
-  const res = await fetch("/login",{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({
-      username:user.value,
-      password:pass.value
-    })
-  });
-
-  const data = await res.text();
-
-  if(data==="Hatalı giriş"){
-    alert("Yanlış!");
-    return;
-  }
-
-  currentUser = JSON.parse(data);
-
-  if(currentUser.role==="admin"){
-    adminPanel.style.display="block";
-  }
-
-  loadCars();
+let cart = [];
+function addToCart(name, price){
+ cart.push({name, price});
+ renderCart();
 }
-
-// 🚗 ARAÇLARI GETİR
-async function loadCars(){
-  const res = await fetch("/cars");
-  const cars = await res.json();
-
-  carsDiv = document.getElementById("cars");
-  carsDiv.innerHTML="";
-
-  cars.forEach(c=>{
-    carsDiv.innerHTML+=`
-      <div class="box">
-        <img src="${c.img}">
-        <h3>${c.name}</h3>
-        <p>${c.price} TL</p>
-        ${currentUser?.role==="admin" ?
-          `<button onclick="deleteCar('${c._id}')">Sil</button>` : ""}
-      </div>
-    `;
-  });
+function renderCart(){
+ let list = document.getElementById('cart-list');
+ let total = 0;
+ list.innerHTML='';
+ cart.forEach(item=>{
+   total += item.price;
+   list.innerHTML += `<li>${item.name} - ${item.price}₺</li>`;
+ });
+ document.getElementById('total').innerText = total;
 }
-
-// ➕ EKLE
-async function addCar(){
-  await fetch("/add-car",{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({
-      name:carName.value,
-      price:carPrice.value,
-      img:carImg.value
-    })
-  });
-
-  loadCars();
+function checkout(){
+ if(cart.length==0){alert('Sepet boş'); return;}
+ alert('Sipariş alındı! WhatsApp üzerinden sizinle iletişime geçilecek.');
+ cart=[];
+ renderCart();
 }
-
-// ❌ SİL
-async function deleteCar(id){
-  await fetch("/delete-car",{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({id})
-  });
-
-  loadCars();
-}
-
 </script>
 
 </body>
