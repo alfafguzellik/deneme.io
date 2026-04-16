@@ -4,21 +4,28 @@
 <meta charset="UTF-8">
 <title>Tane Kuruyemiş</title>
 
-<!-- ✅ Firebase CDN (COMPAT) -->
+<!-- Firebase CDN (DOĞRU SİSTEM) -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+
+<style>
+body{font-family:Arial;background:#f5f5f5;padding:20px}
+.card{background:#fff;padding:15px;margin:10px;border-radius:10px}
+button{padding:6px 12px;margin-top:5px;cursor:pointer}
+input{padding:5px;margin:5px}
+</style>
 
 </head>
 <body>
 
-<h2>Tane Kuruyemiş</h2>
+<h2>🌰 Tane Kuruyemiş</h2>
 
-<button onclick="admin()">Admin Panel</button>
+<button onclick="openAdmin()">🔐 Admin Panel</button>
 
+<h3>Ürünler</h3>
 <div id="products"></div>
 
-<div id="panel" style="display:none;">
+<div id="admin" style="display:none;">
   <h3>Ürün Ekle</h3>
   <input id="name" placeholder="Ürün adı">
   <input id="price" placeholder="Fiyat">
@@ -30,9 +37,9 @@
 
 <script>
 
-// 🔥 SENİN FIREBASE CONFIG (BURAYA SENİN KOD)
+// ✅ SENİN FIREBASE CONFIG (AYARLANDI)
 const firebaseConfig = {
-  apiKey: "BURAYA_APIKEY",
+  apiKey: "AIzaSyCz19no8y3VQroeNWkIGLTENinm781t6Ss",
   authDomain: "taneduragi.firebaseapp.com",
   projectId: "taneduragi"
 };
@@ -41,58 +48,60 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-// Ürünleri göster
+// Ürünleri çek
 function loadProducts(){
-  db.collection("products").onSnapshot(snapshot=>{
-    let html = "";
-    snapshot.forEach(doc=>{
-      let p = doc.data();
-      html += `
-      <div>
-        ${p.name} - ${p.price}₺
-        <button onclick="order('${p.name}',${p.price})">Sipariş</button>
-      </div>`;
-    });
-    document.getElementById("products").innerHTML = html;
+ db.collection("products").onSnapshot(snapshot=>{
+  let html="";
+  snapshot.forEach(doc=>{
+   let p=doc.data();
+   html+=`
+   <div class="card">
+     <b>${p.name}</b><br>
+     ${p.price}₺<br>
+     <button onclick="order('${p.name}',${p.price})">Sipariş Ver</button>
+   </div>`;
   });
+  document.getElementById("products").innerHTML=html;
+ });
 }
 
 // Ürün ekle
 function addProduct(){
-  db.collection("products").add({
-    name: document.getElementById("name").value,
-    price: Number(document.getElementById("price").value)
-  });
+ db.collection("products").add({
+  name:document.getElementById("name").value,
+  price:Number(document.getElementById("price").value)
+ });
 }
 
 // Sipariş ver
-function order(name, price){
-  db.collection("orders").add({
-    name,
-    price,
-    date: Date.now()
-  });
+function order(name,price){
+ db.collection("orders").add({
+  name,
+  price,
+  date:Date.now()
+ });
+ alert("Sipariş gönderildi!");
 }
 
-// Siparişleri göster
+// Siparişleri çek
 function loadOrders(){
-  db.collection("orders").onSnapshot(snapshot=>{
-    let html = "";
-    snapshot.forEach(doc=>{
-      let o = doc.data();
-      html += `<div>${o.name} - ${o.price}₺</div>`;
-    });
-    document.getElementById("orders").innerHTML = html;
+ db.collection("orders").onSnapshot(snapshot=>{
+  let html="";
+  snapshot.forEach(doc=>{
+   let o=doc.data();
+   html+=`<div class="card">${o.name} - ${o.price}₺</div>`;
   });
+  document.getElementById("orders").innerHTML=html;
+ });
 }
 
 // Admin panel aç
-function admin(){
-  document.getElementById("panel").style.display = "block";
-  loadOrders();
+function openAdmin(){
+ document.getElementById("admin").style.display="block";
+ loadOrders();
 }
 
-// Başlat
+// başlat
 loadProducts();
 
 </script>
