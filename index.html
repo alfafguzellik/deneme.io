@@ -5,29 +5,181 @@
 <title>Tane Kuruyemiş</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<style>
-body{font-family:Arial;background:#f5f5f5;margin:0}
-header{background:#1b5e20;color:#fff;padding:20px;text-align:center}
-.products{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;padding:20px}
-.card{background:#fff;padding:15px;border-radius:12px;box-shadow:0 5px 15px rgba(0,0,0,0.1)}
-button{padding:8px;border:none;background:#2e7d32;color:#fff;border-radius:6px;margin-top:5px;cursor:pointer}
-.cart{position:fixed;top:20px;right:20px;background:#000;color:#fff;padding:10px;border-radius:10px}
-.panel{display:none;padding:20px;background:#fff}
-img{border-radius:10px}
-</style>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
 
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
+body{background:#f8f8f8}
+
+/* HEADER */
+header{
+ background:linear-gradient(135deg,#1b5e20,#2e7d32);
+ color:#fff;
+ padding:20px;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+}
+
+/* LOGO */
+.logo{
+ display:flex;
+ align-items:center;
+ gap:10px;
+}
+
+.logo img{
+ width:55px;
+ height:55px;
+ border-radius:50%;
+ border:3px solid #fff;
+ object-fit:cover;
+}
+
+.logo span{
+ font-weight:700;
+ font-size:18px;
+}
+
+/* INSTAGRAM */
+.insta{
+ background:#fff;
+ color:#1b5e20;
+ padding:8px 12px;
+ border-radius:20px;
+ text-decoration:none;
+ font-size:14px;
+ font-weight:500;
+}
+
+/* SEPET */
+.cart{
+ position:fixed;
+ top:20px;
+ right:20px;
+ background:#000;
+ color:#fff;
+ padding:10px 15px;
+ border-radius:30px;
+ cursor:pointer;
+ z-index:999;
+}
+
+/* GRID */
+.products{
+ display:grid;
+ grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+ gap:20px;
+ padding:20px;
+}
+
+/* CARD */
+.card{
+ background:#fff;
+ border-radius:15px;
+ overflow:hidden;
+ box-shadow:0 10px 25px rgba(0,0,0,0.1);
+ transition:.3s;
+ position:relative;
+}
+.card:hover{transform:translateY(-5px)}
+
+.card img{width:100%;height:180px;object-fit:cover}
+
+.card-content{padding:15px}
+
+.price{font-weight:bold;color:#2e7d32;margin-top:5px}
+
+/* BADGE */
+.badge{
+ position:absolute;
+ top:10px;
+ left:10px;
+ background:#ff3d00;
+ color:#fff;
+ padding:4px 8px;
+ border-radius:8px;
+ font-size:12px;
+}
+
+/* BUTTON */
+button{
+ width:100%;
+ padding:10px;
+ border:none;
+ border-radius:8px;
+ background:#2e7d32;
+ color:#fff;
+ margin-top:10px;
+ cursor:pointer;
+}
+
+/* SEPET PANEL */
+.panel{
+ position:fixed;
+ bottom:0;
+ left:0;
+ width:100%;
+ background:#fff;
+ padding:20px;
+ display:none;
+ border-top-left-radius:20px;
+ border-top-right-radius:20px;
+ box-shadow:0 -5px 15px rgba(0,0,0,0.2);
+}
+
+/* YORUMLAR */
+.reviews{
+ overflow:hidden;
+ white-space:nowrap;
+ background:#fff;
+ padding:10px;
+ margin:10px;
+ border-radius:10px;
+}
+
+.review-track{
+ display:inline-block;
+ animation:scroll 15s linear infinite;
+}
+
+.review{
+ display:inline-block;
+ margin-right:50px;
+ font-size:14px;
+}
+
+@keyframes scroll{
+ 0%{transform:translateX(0)}
+ 100%{transform:translateX(-100%)}
+}
+
+</style>
 </head>
 <body>
 
 <header>
-<h2>🌰 Tane Kuruyemiş</h2>
+  <div class="logo">
+    <img src="logo.png">
+    <span>Tane Kuruyemiş</span>
+  </div>
+  <a class="insta" href="https://www.instagram.com/taneduragi/" target="_blank">Instagram</a>
 </header>
 
-<div class="cart" onclick="toggleCart()">🛒 Sepet (<span id="count">0</span>)</div>
+<div class="cart" onclick="toggleCart()">🛒 (<span id="count">0</span>)</div>
+
+<div class="reviews">
+ <div class="review-track">
+  <span class="review">⭐ Çok hızlı geldi!</span>
+  <span class="review">⭐ Karışık paket mükemmel</span>
+  <span class="review">⭐ Sürekli buradan alıyorum</span>
+  <span class="review">⭐ Taze ve kaliteli</span>
+ </div>
+</div>
 
 <div class="products" id="products"></div>
 
-<div id="cartPanel" class="panel">
+<div class="panel" id="cartPanel">
 <h3>Sepet</h3>
 <div id="cartItems"></div>
 <h4 id="total"></h4>
@@ -36,46 +188,43 @@ img{border-radius:10px}
 
 <script>
 
-// 🔥 ÜRÜNLER BURADA (İSTEDİĞİN GİBİ DEĞİŞTİR)
 const products = [
  {name:"Antep Fıstığı",price:150,img:"https://i.imgur.com/8Km9tLL.jpg"},
  {name:"Badem",price:120,img:"https://i.imgur.com/j6y7s3x.jpg"},
  {name:"Fındık",price:130,img:"https://i.imgur.com/5Aqgz7o.jpg"},
- {name:"Kaju",price:140,img:"https://i.imgur.com/2nCt3Sb.jpg"},
- {name:"Karışık Kuruyemiş",price:160,img:"https://i.imgur.com/9M6XG3H.jpg"}
+ {name:"Kaju",price:140,img:"https://i.imgur.com/2nCt3Sb.jpg"}
 ];
 
 let cart=[];
 
-// ürünleri bas
 function loadProducts(){
  let html="";
  products.forEach(p=>{
   html+=`
   <div class="card">
-    <img src="${p.img}" width="100%">
-    <h3>${p.name}</h3>
-    <p>${p.price}₺</p>
-    <button onclick="addToCart('${p.name}',${p.price})">Sepete ekle</button>
+    <div class="badge">İndirim</div>
+    <img src="${p.img}">
+    <div class="card-content">
+      <h3>${p.name}</h3>
+      <div class="price">${p.price}₺</div>
+      <button onclick="addToCart('${p.name}',${p.price})">Sepete ekle</button>
+    </div>
   </div>`;
  });
  document.getElementById("products").innerHTML=html;
 }
 
-// sepete ekle
 function addToCart(name,price){
  cart.push({name,price});
  document.getElementById("count").innerText=cart.length;
 }
 
-// sepet aç/kapat
 function toggleCart(){
  let p=document.getElementById("cartPanel");
  p.style.display = p.style.display==="block"?"none":"block";
  renderCart();
 }
 
-// sepet çiz
 function renderCart(){
  let html="";
  let total=0;
@@ -87,17 +236,15 @@ function renderCart(){
  document.getElementById("total").innerText="Toplam: "+total+"₺";
 }
 
-// WhatsApp sipariş
 function sendWhatsApp(){
  let text="Sipariş:\\n";
  cart.forEach(i=>{
-  text += i.name+" - "+i.price+"₺\\n";
+  text+=i.name+" - "+i.price+"₺\\n";
  });
- text += "Toplam: "+cart.reduce((a,b)=>a+b.price,0)+"₺";
+ text+="Toplam: "+cart.reduce((a,b)=>a+b.price,0)+"₺";
  window.open("https://wa.me/905330126971?text="+encodeURIComponent(text));
 }
 
-// başlat
 loadProducts();
 
 </script>
