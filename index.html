@@ -3,8 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tane Kuruyemiş PRO</title>
+<title>Tane Kuruyemiş (Cloud)</title>
 <link rel="icon" href="logo.png">
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <style>
 body{font-family:Arial;background:#f5f5f5;margin:0}
 header{background:#2e7d32;color:#fff;padding:15px;text-align:center}
@@ -18,21 +21,24 @@ input{padding:8px;margin:5px}
 <body>
 
 <header>
-<h2>Tane Kuruyemiş PRO Sistem</h2>
+<h2>Tane Kuruyemiş (Canlı Sistem)</h2>
 </header>
 
 <div class="admin" onclick="login()">Admin</div>
-
 <div id="shop"></div>
 
 <div id="adminPanel" class="hidden">
 <h3>Admin Panel</h3>
+<input id="email" placeholder="email">
+<input id="pass" placeholder="şifre" type="password">
+<button onclick="register()">Kayıt</button>
+<button onclick="loginEmail()">Giriş</button>
 
 <h4>Ürün Ekle</h4>
 <input id="name" placeholder="Ürün adı">
 <input id="price" placeholder="Fiyat">
 <input id="stock" placeholder="Stok">
-<input type="file" id="img">
+<input id="img" placeholder="Resim URL">
 <button onclick="addProduct()">Ekle</button>
 
 <h4>Siparişler</h4>
@@ -40,82 +46,83 @@ input{padding:8px;margin:5px}
 </div>
 
 <script>
+// FIREBASE CONFIG
+const firebaseConfig = {
+  apiKey: "AIzaSyCz19no8y3VQroeNWkIGLTENinm781t6Ss",
+  authDomain: "taneduragi.firebaseapp.com",
+  projectId: "taneduragi",
+  storageBucket: "taneduragi.firebasestorage.app",
+  messagingSenderId: "356076972743",
+  appId: "1:356076972743:web:2bef1eb37bbbd678076ce2"
+};
 
-// LOCAL DATABASE (kalıcı)
-let products = JSON.parse(localStorage.getItem('products')) || [];
-let orders = JSON.parse(localStorage.getItem('orders')) || [];
-let cart = [];
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const auth = firebase.auth();
 
-function save(){
-localStorage.setItem('products',JSON.stringify(products));
-localStorage.setItem('orders',JSON.stringify(orders));
-}
-
+// RENDER PRODUCTS
 function render(){
-let html='';
-products.forEach((p,i)=>{
-html+=`<div class='card'>
-<img src='${p.img}' width='100%'>
-<h3>${p.name}</h3>
-<p>${p.price}₺ | Stok: ${p.stock}</p>
-<button onclick="addToCart(${i})">Sepete ekle</button>
-</div>`});
-document.getElementById('shop').innerHTML=html;
+ db.collection('products').onSnapshot(snap=>{
+  let html='';
+  snap.forEach(doc=>{
+   let p=doc.data();
+   html+=`<div class='card'>
+   <img src='${p.img}' width='100%'>
+   <h3>${p.name}</h3>
+   <p>${p.price}₺ | Stok: ${p.stock}</p>
+   <button onclick="order('${doc.id}','${p.name}',${p.price})">Sipariş</button>
+   </div>`
+  })
+  document.getElementById('shop').innerHTML=html;
+ })
 }
 
+// ADD PRODUCT
 function addProduct(){
-let file=document.getElementById('img').files[0];
-let reader=new FileReader();
-reader.onload=function(){
-products.push({
-name:document.getElementById('name').value,
-price:parseInt(document.getElementById('price').value),
-stock:parseInt(document.getElementById('stock').value),
-img:reader.result
-});
-save();render();
-}
-if(file) reader.readAsDataURL(file);
+ db.collection('products').add({
+  name:document.getElementById('name').value,
+  price:Number(document.getElementById('price').value),
+  stock:Number(document.getElementById('stock').value),
+  img:document.getElementById('img').value
+ })
 }
 
-function addToCart(i){
-let p=products[i];
-if(p.stock<=0){alert('Stok yok');return}
-p.stock--;
-cart.push(p);
-save();render();
+// ORDER
+function order(id,name,price){
+ db.collection('orders').add({name,price,date:Date.now()})
 }
 
-function checkout(){
-orders.push(cart);
-save();
-cart=[];
-alert('Sipariş alındı');
-renderOrders();
+// SHOW ORDERS
+function loadOrders(){
+ db.collection('orders').onSnapshot(snap=>{
+  let html='';
+  snap.forEach(doc=>{
+   let o=doc.data();
+   html+=`<div class='card'>${o.name} - ${o.price}₺
+   <button onclick="delOrder('${doc.id}')">Sil</button></div>`
+  })
+  document.getElementById('orders').innerHTML=html;
+ })
 }
 
-function renderOrders(){
-let html='';
-orders.forEach((o,index)=>{
-html+=`<div class='card'>Sipariş ${index+1}<br>`;
-o.forEach(i=>html+=i.name+'<br>');
-html+=`
-<button onclick='approve(${index})'>Onayla</button>
-<button onclick='deleteOrder(${index})'>Sil</button>
-</div>`});
-document.getElementById('orders').innerHTML=html;
+function delOrder(id){db.collection('orders').doc(id).delete()}
+
+// AUTH
+function register(){
+ auth.createUserWithEmailAndPassword(
+  document.getElementById('email').value,
+  document.getElementById('pass').value)
 }
 
-function approve(i){alert('Sipariş onaylandı');}
-function deleteOrder(i){orders.splice(i,1);save();renderOrders();}
+function loginEmail(){
+ auth.signInWithEmailAndPassword(
+  document.getElementById('email').value,
+  document.getElementById('pass').value)
+}
 
 function login(){
-let u=prompt('kullanıcı');
-let p=prompt('şifre');
-if(u==='admin' && p==='1234'){
-document.getElementById('adminPanel').classList.toggle('hidden');
-renderOrders();
-}else alert('hatalı');
+ document.getElementById('adminPanel').classList.toggle('hidden');
+ loadOrders();
 }
 
 render();
