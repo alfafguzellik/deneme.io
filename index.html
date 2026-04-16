@@ -9,34 +9,41 @@
 
 <style>
 
-/* DARK MODE */
-:root{
- --bg:#f4f4f4;
- --card:#fff;
- --text:#000;
- --main:#2e7d32;
-}
-
-.dark{
- --bg:#121212;
- --card:#1e1e1e;
- --text:#fff;
-}
-
 /* BASE */
 body{
  margin:0;
- background:var(--bg);
- color:var(--text);
+ background:#f4f4f4;
  font-family:'Inter';
- transition:.3s;
 }
 
 h1,h2,h3,b{font-family:'Poppins'}
 
+/* LOADING */
+.loader{
+ display:grid;
+ grid-template-columns:repeat(2,1fr);
+ gap:10px;
+ padding:10px;
+}
+
+.skeleton{
+ height:150px;
+ background:linear-gradient(90deg,#eee,#ddd,#eee);
+ animation:load 1.2s infinite;
+ border-radius:10px;
+}
+
+@keyframes load{
+ 0%{background-position:-100px}
+ 100%{background-position:200px}
+}
+
 /* HEADER */
 header{
- background:var(--main);
+ position:sticky;
+ top:0;
+ z-index:999;
+ background:#2e7d32;
  color:#fff;
  padding:15px;
  display:flex;
@@ -44,37 +51,9 @@ header{
  align-items:center;
 }
 
-.topRight{
- display:flex;
- gap:15px;
- align-items:center;
-}
-
-/* DARK BTN */
-.darkBtn{
- cursor:pointer;
- font-size:18px;
-}
-
 /* CART */
-.cartBox{
- position:relative;
- cursor:pointer;
-}
-
-.cart{
- font-size:22px;
- transition:.3s;
-}
-
-.cart.animate{
- animation:bounce .5s;
-}
-
-@keyframes bounce{
- 50%{transform:scale(1.3)}
-}
-
+.cartBox{position:relative;cursor:pointer}
+.cart{font-size:22px}
 .badge{
  position:absolute;
  top:-6px;
@@ -86,6 +65,64 @@ header{
  border-radius:50%;
 }
 
+/* HERO */
+.hero{
+ background:url("https://i.imgur.com/8Km9tLL.jpg") center/cover;
+ color:#fff;
+ padding:40px 20px;
+ text-align:center;
+}
+
+.hero h1{margin:0}
+.hero button{
+ margin-top:10px;
+ padding:10px 20px;
+ border:none;
+ background:#fff;
+ color:#000;
+ border-radius:20px;
+}
+
+/* BANNERS */
+.banners{
+ display:flex;
+ gap:10px;
+ padding:10px;
+}
+
+.banner{
+ flex:1;
+ background:#fff;
+ padding:10px;
+ border-radius:10px;
+ text-align:center;
+ font-size:14px;
+}
+
+/* CATEGORIES ICON */
+.catIcons{
+ display:flex;
+ gap:15px;
+ padding:10px;
+ overflow:auto;
+}
+
+.catIcon{
+ text-align:center;
+}
+
+.circle{
+ width:60px;
+ height:60px;
+ border-radius:50%;
+ background:#fff;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ margin:auto;
+ font-size:22px;
+}
+
 /* SEARCH */
 .search{padding:10px}
 .search input{
@@ -93,27 +130,6 @@ header{
  padding:12px;
  border:none;
  border-radius:10px;
- outline:none;
-}
-
-/* CATEGORY */
-.categories{
- display:flex;
- gap:10px;
- padding:10px;
- overflow:auto;
-}
-
-.cat{
- background:var(--card);
- padding:8px 14px;
- border-radius:20px;
- cursor:pointer;
-}
-
-.active{
- background:var(--main);
- color:#fff;
 }
 
 /* PRODUCTS */
@@ -125,18 +141,14 @@ header{
 }
 
 .card{
- background:var(--card);
+ background:#fff;
  padding:10px;
  border-radius:12px;
- cursor:pointer;
- box-shadow:0 3px 8px rgba(0,0,0,0.08);
- transition:.25s;
  position:relative;
+ transition:.2s;
 }
 
-.card:hover{
- transform:translateY(-5px) scale(1.02);
-}
+.card:hover{transform:scale(1.03)}
 
 .card img{
  width:100%;
@@ -147,13 +159,30 @@ header{
 
 /* ADD BUTTON */
 .addBtn{
- margin-top:5px;
- background:var(--main);
+ position:absolute;
+ bottom:10px;
+ left:10px;
+ right:10px;
+ background:#2e7d32;
  color:#fff;
  border:none;
- padding:6px;
- border-radius:6px;
- width:100%;
+ padding:8px;
+ border-radius:8px;
+ opacity:0;
+ transition:.2s;
+}
+
+.card:hover .addBtn{
+ opacity:1;
+}
+
+/* FOOTER */
+footer{
+ background:#222;
+ color:#fff;
+ padding:20px;
+ text-align:center;
+ margin-top:20px;
 }
 
 /* TOAST */
@@ -164,16 +193,12 @@ header{
  transform:translateX(-50%);
  background:#333;
  color:#fff;
- padding:12px 20px;
+ padding:10px 20px;
  border-radius:20px;
  opacity:0;
 }
 
-.toast.show{
- opacity:1;
- bottom:40px;
- transition:.3s;
-}
+.toast.show{opacity:1}
 
 </style>
 </head>
@@ -182,79 +207,50 @@ header{
 
 <header>
 <b>Tane Kuruyemiş</b>
-
-<div class="topRight">
-
-<div class="darkBtn" onclick="toggleDark()">🌙</div>
-
 <div class="cartBox" onclick="goCart()">
- <div class="cart" id="cartIcon">🛒</div>
+ <div class="cart">🛒</div>
  <div class="badge" id="count">0</div>
 </div>
+</header>
 
+<div class="hero">
+<h1>Taze Kuruyemişler</h1>
+<p>En kaliteli ürünler kapında</p>
+<button onclick="scrollToProducts()">Alışverişe Başla</button>
 </div>
 
-</header>
+<div class="banners">
+<div class="banner">🚚 Ücretsiz Kargo</div>
+<div class="banner">💸 500₺ üstü %10 indirim</div>
+</div>
+
+<div class="catIcons">
+<div class="catIcon"><div class="circle">🥜</div>Kuruyemiş</div>
+<div class="catIcon"><div class="circle">🍿</div>Atıştırmalık</div>
+<div class="catIcon"><div class="circle">🥤</div>İçecek</div>
+</div>
 
 <div class="search">
 <input type="text" placeholder="Ara..." oninput="search(this.value)">
 </div>
 
-<div class="categories" id="cats"></div>
-<div class="products" id="products"></div>
+<div id="products" class="products"></div>
 
 <div class="toast" id="toast">Sepete eklendi</div>
+
+<footer>
+<p>© Tane Kuruyemiş</p>
+<p>WhatsApp | Instagram</p>
+</footer>
 
 <script>
 
 const products=[
-{id:0,name:"Antep Fıstığı",price:150,cat:"Kuruyemiş",img:"https://i.imgur.com/8Km9tLL.jpg"},
-{id:1,name:"Badem",price:120,cat:"Kuruyemiş",img:"https://i.imgur.com/j6y7s3x.jpg"},
-{id:2,name:"Leblebi",price:80,cat:"Atıştırmalık",img:"https://i.imgur.com/5jz9F8P.jpg"}
+{id:0,name:"Antep Fıstığı",price:150,img:"https://i.imgur.com/8Km9tLL.jpg"},
+{id:1,name:"Badem",price:120,img:"https://i.imgur.com/j6y7s3x.jpg"},
+{id:2,name:"Leblebi",price:80,img:"https://i.imgur.com/5jz9F8P.jpg"}
 ];
 
-let currentCat="Tümü";
-
-/* DARK MODE */
-if(localStorage.getItem("dark")==="1"){
- document.body.classList.add("dark");
-}
-
-function toggleDark(){
- document.body.classList.toggle("dark");
- localStorage.setItem("dark",document.body.classList.contains("dark")?"1":"0");
-}
-
-/* CATEGORY */
-function loadCats(){
- let cats=["Tümü",...new Set(products.map(p=>p.cat))];
- let html="";
- cats.forEach(c=>{
-  html+=`<div class="cat ${c==currentCat?'active':''}" onclick="setCat('${c}')">${c}</div>`;
- });
- catsDiv.innerHTML=html;
-}
-
-function setCat(c){
- currentCat=c;
- filter();
-}
-
-/* SEARCH */
-function search(val){
- filter(val);
-}
-
-function filter(val=""){
- let filtered=products.filter(p=>{
-  return (currentCat=="Tümü"||p.cat==currentCat) &&
-         p.name.toLowerCase().includes(val.toLowerCase());
- });
- render(filtered);
- loadCats();
-}
-
-/* RENDER */
 function render(list){
  let html="";
  list.forEach(p=>{
@@ -263,84 +259,48 @@ function render(list){
     <img src="${p.img}">
     <h3>${p.name}</h3>
     <p>${p.price}₺</p>
-    <button class="addBtn" onclick="addCart(event,${p.id})">Sepete ekle</button>
+    <button class="addBtn" onclick="addCart(${p.id})">Sepete ekle</button>
   </div>`;
  });
- productsDiv.innerHTML=html;
+ products.innerHTML=html;
 }
 
-/* ADD TO CART + UÇAN ANİMASYON */
-function addCart(e,id){
-
- e.stopPropagation();
-
- let p=products.find(x=>x.id==id);
-
+function addCart(id){
+ let p=productsData.find(x=>x.id==id);
  let cart=JSON.parse(localStorage.getItem("cart"))||[];
- let ex=cart.find(x=>x.id==id);
-
- if(ex){ex.qty++}else{cart.push({...p,qty:1})}
-
+ let e=cart.find(x=>x.id==id);
+ if(e){e.qty++}else{cart.push({...p,qty:1})}
  localStorage.setItem("cart",JSON.stringify(cart));
-
- fly(e.target);
- updateCartCount();
- animateCart();
- showToast();
-}
-
-/* UÇAN ANİMASYON */
-function fly(btn){
- let img=btn.parentElement.querySelector("img").cloneNode();
- let rect=btn.getBoundingClientRect();
- let cart=document.getElementById("cartIcon").getBoundingClientRect();
-
- img.style.position="fixed";
- img.style.left=rect.left+"px";
- img.style.top=rect.top+"px";
- img.style.width="50px";
- img.style.zIndex=999;
-
- document.body.appendChild(img);
-
- img.animate([
-  {transform:"translate(0,0) scale(1)"},
-  {transform:`translate(${cart.left-rect.left}px,${cart.top-rect.top}px) scale(0.2)`}
- ],{duration:600});
-
- setTimeout(()=>img.remove(),600);
-}
-
-/* CART */
-function updateCartCount(){
- let cart=JSON.parse(localStorage.getItem("cart"))||[];
- let total=0;
- cart.forEach(p=>total+=p.qty||1);
- count.innerText=total;
-}
-
-function animateCart(){
- cartIcon.classList.add("animate");
- setTimeout(()=>cartIcon.classList.remove("animate"),500);
-}
-
-/* TOAST */
-function showToast(){
+ updateCart();
  toast.classList.add("show");
  setTimeout(()=>toast.classList.remove("show"),1500);
+}
+
+function updateCart(){
+ let cart=JSON.parse(localStorage.getItem("cart"))||[];
+ let t=0;
+ cart.forEach(p=>t+=p.qty);
+ count.innerText=t;
+ count.style.display=t? "block":"none";
+}
+
+function search(val){
+ let f=productsData.filter(p=>p.name.toLowerCase().includes(val.toLowerCase()));
+ render(f);
 }
 
 function goCart(){
  window.location="cart.html";
 }
 
-/* INIT */
-const productsDiv=document.getElementById("products");
-const catsDiv=document.getElementById("cats");
+function scrollToProducts(){
+ window.scrollTo({top:500,behavior:"smooth"});
+}
 
-loadCats();
-render(products);
-updateCartCount();
+const productsData=products;
+
+render(productsData);
+updateCart();
 
 </script>
 
