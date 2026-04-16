@@ -9,146 +9,81 @@
 
 <style>
 
-/* BASE */
-body{
- margin:0;
- background:#f4f4f4;
- font-family:'Inter';
-}
-
+body{margin:0;font-family:'Inter';background:#f4f4f4}
 h1,h2,h3,b{font-family:'Poppins'}
 
-/* LOADING */
-.loader{
- display:grid;
- grid-template-columns:repeat(2,1fr);
- gap:10px;
- padding:10px;
-}
-
-.skeleton{
- height:150px;
- background:linear-gradient(90deg,#eee,#ddd,#eee);
- animation:load 1.2s infinite;
- border-radius:10px;
-}
-
-@keyframes load{
- 0%{background-position:-100px}
- 100%{background-position:200px}
+/* TOP BAR */
+.topbar{
+ background:#000;
+ color:#fff;
+ text-align:center;
+ padding:5px;
+ font-size:13px;
 }
 
 /* HEADER */
 header{
- position:sticky;
- top:0;
- z-index:999;
  background:#2e7d32;
  color:#fff;
- padding:15px;
+ padding:12px;
  display:flex;
  justify-content:space-between;
- align-items:center;
-}
-
-/* CART */
-.cartBox{position:relative;cursor:pointer}
-.cart{font-size:22px}
-.badge{
- position:absolute;
- top:-6px;
- right:-10px;
- background:red;
- color:#fff;
- font-size:11px;
- padding:2px 6px;
- border-radius:50%;
-}
-
-/* HERO */
-.hero{
- background:url("https://i.imgur.com/8Km9tLL.jpg") center/cover;
- color:#fff;
- padding:40px 20px;
- text-align:center;
-}
-
-.hero h1{margin:0}
-.hero button{
- margin-top:10px;
- padding:10px 20px;
- border:none;
- background:#fff;
- color:#000;
- border-radius:20px;
-}
-
-/* BANNERS */
-.banners{
- display:flex;
- gap:10px;
- padding:10px;
-}
-
-.banner{
- flex:1;
- background:#fff;
- padding:10px;
- border-radius:10px;
- text-align:center;
- font-size:14px;
-}
-
-/* CATEGORIES ICON */
-.catIcons{
- display:flex;
- gap:15px;
- padding:10px;
- overflow:auto;
-}
-
-.catIcon{
- text-align:center;
-}
-
-.circle{
- width:60px;
- height:60px;
- border-radius:50%;
- background:#fff;
- display:flex;
- align-items:center;
- justify-content:center;
- margin:auto;
- font-size:22px;
 }
 
 /* SEARCH */
-.search{padding:10px}
-.search input{
+.searchBox{
+ position:relative;
+ padding:10px;
+}
+
+.searchBox input{
  width:100%;
  padding:12px;
  border:none;
  border-radius:10px;
 }
 
+/* LIVE SEARCH */
+.results{
+ position:absolute;
+ background:#fff;
+ width:90%;
+ left:5%;
+ top:50px;
+ border-radius:10px;
+ box-shadow:0 5px 20px rgba(0,0,0,0.1);
+ display:none;
+ z-index:999;
+}
+
+.resultItem{
+ display:flex;
+ gap:10px;
+ padding:10px;
+ border-bottom:1px solid #eee;
+}
+
+.resultItem img{
+ width:40px;
+ height:40px;
+ object-fit:cover;
+ border-radius:5px;
+}
+
 /* PRODUCTS */
 .products{
  display:grid;
  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
- gap:12px;
- padding:12px;
+ gap:10px;
+ padding:10px;
 }
 
 .card{
  background:#fff;
  padding:10px;
- border-radius:12px;
+ border-radius:10px;
  position:relative;
- transition:.2s;
 }
-
-.card:hover{transform:scale(1.03)}
 
 .card img{
  width:100%;
@@ -157,123 +92,130 @@ header{
  border-radius:10px;
 }
 
-/* ADD BUTTON */
-.addBtn{
+/* BADGE */
+.badge{
  position:absolute;
- bottom:10px;
- left:10px;
- right:10px;
+ top:5px;
+ left:5px;
+ background:red;
+ color:#fff;
+ padding:3px 6px;
+ font-size:11px;
+ border-radius:5px;
+}
+
+/* BUTTON */
+.addBtn{
+ margin-top:5px;
  background:#2e7d32;
  color:#fff;
  border:none;
- padding:8px;
- border-radius:8px;
- opacity:0;
- transition:.2s;
+ padding:6px;
+ width:100%;
+ border-radius:6px;
 }
 
-.card:hover .addBtn{
- opacity:1;
+/* SUGGEST */
+.suggest{
+ padding:10px;
 }
 
-/* FOOTER */
-footer{
- background:#222;
- color:#fff;
- padding:20px;
- text-align:center;
- margin-top:20px;
+.suggestTitle{
+ font-weight:bold;
+ margin-bottom:5px;
 }
 
-/* TOAST */
-.toast{
+/* BOTTOM MENU */
+.bottomMenu{
  position:fixed;
- bottom:20px;
- left:50%;
- transform:translateX(-50%);
- background:#333;
- color:#fff;
- padding:10px 20px;
- border-radius:20px;
- opacity:0;
+ bottom:0;
+ width:100%;
+ background:#fff;
+ display:flex;
+ justify-content:space-around;
+ padding:10px;
+ box-shadow:0 -2px 10px rgba(0,0,0,0.1);
 }
-
-.toast.show{opacity:1}
 
 </style>
 </head>
 
 <body>
 
+<div class="topbar">
+🚚 Aynı gün kargo | 💰 Kapıda ödeme
+</div>
+
 <header>
 <b>Tane Kuruyemiş</b>
-<div class="cartBox" onclick="goCart()">
- <div class="cart">🛒</div>
- <div class="badge" id="count">0</div>
-</div>
+<div onclick="goCart()">🛒 <span id="count">0</span></div>
 </header>
 
-<div class="hero">
-<h1>Taze Kuruyemişler</h1>
-<p>En kaliteli ürünler kapında</p>
-<button onclick="scrollToProducts()">Alışverişe Başla</button>
+<div class="searchBox">
+<input type="text" placeholder="Ürün ara..." oninput="liveSearch(this.value)">
+<div class="results" id="results"></div>
 </div>
 
-<div class="banners">
-<div class="banner">🚚 Ücretsiz Kargo</div>
-<div class="banner">💸 500₺ üstü %10 indirim</div>
+<div class="products" id="products"></div>
+
+<div class="suggest">
+<div class="suggestTitle">Bunu alan şunu da aldı</div>
+<div class="products" id="suggest"></div>
 </div>
 
-<div class="catIcons">
-<div class="catIcon"><div class="circle">🥜</div>Kuruyemiş</div>
-<div class="catIcon"><div class="circle">🍿</div>Atıştırmalık</div>
-<div class="catIcon"><div class="circle">🥤</div>İçecek</div>
+<div class="bottomMenu">
+<div>🏠</div>
+<div onclick="goCart()">🛒</div>
+<div>❤️</div>
 </div>
-
-<div class="search">
-<input type="text" placeholder="Ara..." oninput="search(this.value)">
-</div>
-
-<div id="products" class="products"></div>
-
-<div class="toast" id="toast">Sepete eklendi</div>
-
-<footer>
-<p>© Tane Kuruyemiş</p>
-<p>WhatsApp | Instagram</p>
-</footer>
 
 <script>
 
 const products=[
-{id:0,name:"Antep Fıstığı",price:150,img:"https://i.imgur.com/8Km9tLL.jpg"},
-{id:1,name:"Badem",price:120,img:"https://i.imgur.com/j6y7s3x.jpg"},
-{id:2,name:"Leblebi",price:80,img:"https://i.imgur.com/5jz9F8P.jpg"}
+{id:0,name:"Antep Fıstığı",price:150,img:"https://i.imgur.com/8Km9tLL.jpg",badge:"🔥 Popüler"},
+{id:1,name:"Badem",price:120,img:"https://i.imgur.com/j6y7s3x.jpg",badge:"⭐ Çok Satan"},
+{id:2,name:"Leblebi",price:80,img:"https://i.imgur.com/5jz9F8P.jpg",badge:"%20 İndirim"}
 ];
 
-function render(list){
+function render(){
  let html="";
- list.forEach(p=>{
+ products.forEach(p=>{
   html+=`
   <div class="card">
-    <img src="${p.img}">
-    <h3>${p.name}</h3>
-    <p>${p.price}₺</p>
-    <button class="addBtn" onclick="addCart(${p.id})">Sepete ekle</button>
+   <div class="badge">${p.badge}</div>
+   <img src="${p.img}">
+   <h3>${p.name}</h3>
+   <p>${p.price}₺</p>
+   <button class="addBtn" onclick="addCart(${p.id})">Sepete ekle</button>
   </div>`;
  });
- products.innerHTML=html;
+ productsDiv.innerHTML=html;
 }
 
+/* LIVE SEARCH */
+function liveSearch(val){
+ if(!val){results.style.display="none";return;}
+ let f=products.filter(p=>p.name.toLowerCase().includes(val.toLowerCase()));
+ let html="";
+ f.forEach(p=>{
+  html+=`
+  <div class="resultItem">
+   <img src="${p.img}">
+   <div>${p.name}</div>
+  </div>`;
+ });
+ results.innerHTML=html;
+ results.style.display="block";
+}
+
+/* CART */
 function addCart(id){
- let p=productsData.find(x=>x.id==id);
  let cart=JSON.parse(localStorage.getItem("cart"))||[];
+ let p=products.find(x=>x.id==id);
  let e=cart.find(x=>x.id==id);
  if(e){e.qty++}else{cart.push({...p,qty:1})}
  localStorage.setItem("cart",JSON.stringify(cart));
  updateCart();
- toast.classList.add("show");
- setTimeout(()=>toast.classList.remove("show"),1500);
 }
 
 function updateCart(){
@@ -281,26 +223,29 @@ function updateCart(){
  let t=0;
  cart.forEach(p=>t+=p.qty);
  count.innerText=t;
- count.style.display=t? "block":"none";
 }
 
-function search(val){
- let f=productsData.filter(p=>p.name.toLowerCase().includes(val.toLowerCase()));
- render(f);
+/* SUGGEST */
+function loadSuggest(){
+ suggest.innerHTML="";
+ products.forEach(p=>{
+  suggest.innerHTML+=`
+  <div class="card">
+   <img src="${p.img}">
+   <p>${p.name}</p>
+  </div>`;
+ });
 }
 
 function goCart(){
  window.location="cart.html";
 }
 
-function scrollToProducts(){
- window.scrollTo({top:500,behavior:"smooth"});
-}
+const productsDiv=document.getElementById("products");
 
-const productsData=products;
-
-render(productsData);
+render();
 updateCart();
+loadSuggest();
 
 </script>
 
