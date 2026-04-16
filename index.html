@@ -3,24 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tane Kuruyemiş</title>
+<title>Tane Kuruyemiş PRO</title>
 <link rel="icon" href="logo.png">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
-body{background:#fffaf5 url('https://www.transparenttextures.com/patterns/cream-paper.png');color:#333}
-header{background:linear-gradient(90deg,#2e7d32,#8bc34a);color:#fff;padding:15px;text-align:center}
-.logo{width:90px;height:90px;border-radius:50%;object-fit:cover;border:4px solid #fff;box-shadow:0 5px 15px rgba(0,0,0,.2)}
-.section{padding:40px;text-align:center}
-.products{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;max-width:1100px;margin:auto}
-.card{background:#fff;padding:15px;border-radius:20px;box-shadow:0 10px 25px rgba(0,0,0,0.08);position:relative}
-.badge{position:absolute;top:10px;left:10px;background:red;color:#fff;padding:5px 10px;border-radius:10px;font-size:12px}
-.card img{width:100%;border-radius:15px;height:150px;object-fit:cover}
-select,button,input{margin-top:8px;padding:8px;border-radius:8px;border:none}
-button{background:#2e7d32;color:#fff;cursor:pointer;width:100%}
-.cart-btn{position:fixed;top:20px;right:20px;background:#fff;padding:12px;border-radius:30px;cursor:pointer}
-.cart-panel{position:fixed;top:0;right:-400px;width:350px;height:100%;background:#fff;box-shadow:-5px 0 15px rgba(0,0,0,.2);padding:20px;transition:.3s;overflow:auto}
-.cart-panel.active{right:0}
+body{font-family:Arial;background:#f5f5f5;margin:0}
+header{background:#2e7d32;color:#fff;padding:15px;text-align:center}
+button{padding:8px;border:none;background:#2e7d32;color:#fff;border-radius:6px;cursor:pointer;margin:3px}
+input{padding:8px;margin:5px}
+.card{background:#fff;padding:10px;margin:10px;border-radius:10px}
 .admin{position:fixed;bottom:20px;left:20px;background:#000;color:#fff;padding:10px;border-radius:10px;cursor:pointer}
 .hidden{display:none}
 </style>
@@ -28,120 +18,107 @@ button{background:#2e7d32;color:#fff;cursor:pointer;width:100%}
 <body>
 
 <header>
-<img src="logo.png" class="logo">
-<h2>Tane Kuruyemiş</h2>
+<h2>Tane Kuruyemiş PRO Sistem</h2>
 </header>
 
-<div class="cart-btn" onclick="toggleCart()">🛒</div>
-<div class="admin" onclick="adminLogin()">Admin</div>
+<div class="admin" onclick="login()">Admin</div>
 
-<div class="cart-panel" id="cartPanel">
-<h3>Sepet</h3>
-<div id="cartItems"></div>
-<p><b>Ürün: <span id="total">0</span>₺</b></p>
-<p>Kargo: <span id="cargo">0</span>₺</p>
-<p><b>Toplam: <span id="grand">0</span>₺</b></p>
-<button onclick="checkout()">WhatsApp Gönder</button>
-</div>
+<div id="shop"></div>
 
-<div class="cart-panel" id="adminPanel">
+<div id="adminPanel" class="hidden">
 <h3>Admin Panel</h3>
+
 <h4>Ürün Ekle</h4>
-<input id="pname" placeholder="Ürün adı">
-<input id="pprice" placeholder="Fiyat">
-<input id="pstock" placeholder="Stok">
+<input id="name" placeholder="Ürün adı">
+<input id="price" placeholder="Fiyat">
+<input id="stock" placeholder="Stok">
+<input type="file" id="img">
 <button onclick="addProduct()">Ekle</button>
+
 <h4>Siparişler</h4>
 <div id="orders"></div>
 </div>
 
-<section class="section">
-<h2>🔥 En Çok Satanlar</h2>
-<div class="products" id="productList"></div>
-</section>
-
 <script>
-let products=[
-{name:'Kaju',price:150,stock:10,img:'https://images.unsplash.com/photo-1604908176997-125f25cc6f3d'},
-{name:'Badem',price:120,stock:15,img:'https://images.unsplash.com/photo-1589308078054-832b5d0c66cb'}
-];
-let cart=[];
-let orders=[];
 
-function renderProducts(){
+// LOCAL DATABASE (kalıcı)
+let products = JSON.parse(localStorage.getItem('products')) || [];
+let orders = JSON.parse(localStorage.getItem('orders')) || [];
+let cart = [];
+
+function save(){
+localStorage.setItem('products',JSON.stringify(products));
+localStorage.setItem('orders',JSON.stringify(orders));
+}
+
+function render(){
 let html='';
 products.forEach((p,i)=>{
 html+=`<div class='card'>
-<div class='badge'>İndirim</div>
-<img src='${p.img}'>
+<img src='${p.img}' width='100%'>
 <h3>${p.name}</h3>
-<p>${p.price}₺</p>
-<select onchange="setGram(this,'${p.name}',${p.price})">
-<option value="1">250g</option>
-<option value="2">500g</option>
-<option value="4">1kg</option>
-</select>
-<button onclick="addToCart(${i})">Sepete Ekle (${p.stock})</button>
+<p>${p.price}₺ | Stok: ${p.stock}</p>
+<button onclick="addToCart(${i})">Sepete ekle</button>
 </div>`});
-document.getElementById('productList').innerHTML=html;
-}
-
-let gramData={};
-function setGram(el,name,price){gramData[name]={mult:parseInt(el.value),price:price}}
-
-function addToCart(i){
-let p=products[i];
-if(p.stock<=0){alert('Stok yok');return;}
-let g=gramData[p.name]||{mult:1,price:p.price};
-let total=g.price*g.mult;
-p.stock--;
-cart.push({name:p.name,gram:g.mult*250,price:total});
-renderProducts();renderCart();
-}
-
-function renderCart(){
-let html='';let total=0;
-cart.forEach(i=>{total+=i.price;html+=`${i.name} ${i.gram}g - ${i.price}₺<br>`});
-let cargo = total>500?0:50;
-document.getElementById('cartItems').innerHTML=html;
-document.getElementById('total').innerText=total;
-document.getElementById('cargo').innerText=cargo;
-document.getElementById('grand').innerText=total+cargo;
-}
-
-function toggleCart(){document.getElementById('cartPanel').classList.toggle('active')}
-
-function checkout(){
-if(cart.length==0){alert('Sepet boş');return;}
-let text='Sipariş:%0A';
-cart.forEach(i=>{text+=`${i.name} - ${i.gram}g - ${i.price}₺%0A`});
-orders.push(text);
-window.open(`https://wa.me/905330126971?text=${text}`,'_blank');
-}
-
-function adminLogin(){
-let pass=prompt('Şifre gir');
-if(pass==='1234'){
-let p=document.getElementById('adminPanel');
-p.classList.toggle('active');
-renderOrders();
-}else alert('Yanlış şifre');
+document.getElementById('shop').innerHTML=html;
 }
 
 function addProduct(){
-let name=document.getElementById('pname').value;
-let price=parseInt(document.getElementById('pprice').value);
-let stock=parseInt(document.getElementById('pstock').value);
-products.push({name,price,stock,img:'https://images.unsplash.com/photo-1604908176997-125f25cc6f3d'});
-renderProducts();
+let file=document.getElementById('img').files[0];
+let reader=new FileReader();
+reader.onload=function(){
+products.push({
+name:document.getElementById('name').value,
+price:parseInt(document.getElementById('price').value),
+stock:parseInt(document.getElementById('stock').value),
+img:reader.result
+});
+save();render();
+}
+if(file) reader.readAsDataURL(file);
+}
+
+function addToCart(i){
+let p=products[i];
+if(p.stock<=0){alert('Stok yok');return}
+p.stock--;
+cart.push(p);
+save();render();
+}
+
+function checkout(){
+orders.push(cart);
+save();
+cart=[];
+alert('Sipariş alındı');
+renderOrders();
 }
 
 function renderOrders(){
-let html='';orders.forEach(o=>{html+=`<div>${o}</div><hr>`});
+let html='';
+orders.forEach((o,index)=>{
+html+=`<div class='card'>Sipariş ${index+1}<br>`;
+o.forEach(i=>html+=i.name+'<br>');
+html+=`
+<button onclick='approve(${index})'>Onayla</button>
+<button onclick='deleteOrder(${index})'>Sil</button>
+</div>`});
 document.getElementById('orders').innerHTML=html;
 }
 
-renderProducts();
+function approve(i){alert('Sipariş onaylandı');}
+function deleteOrder(i){orders.splice(i,1);save();renderOrders();}
+
+function login(){
+let u=prompt('kullanıcı');
+let p=prompt('şifre');
+if(u==='admin' && p==='1234'){
+document.getElementById('adminPanel').classList.toggle('hidden');
+renderOrders();
+}else alert('hatalı');
+}
+
+render();
 </script>
 
 </body>
