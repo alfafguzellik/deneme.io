@@ -9,11 +9,12 @@
 body{font-family:Arial;background:#f5f5f5;margin:0}
 header{background:#2e7d32;color:#fff;padding:20px;text-align:center}
 .products{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;padding:20px}
-.card{background:#fff;padding:15px;border-radius:10px}
-button{padding:8px;border:none;background:#2e7d32;color:#fff;border-radius:6px;margin-top:5px}
-input{padding:6px;margin:5px}
-.admin{position:fixed;bottom:20px;left:20px;background:#000;color:#fff;padding:10px}
-.panel{display:none;padding:20px}
+.card{background:#fff;padding:15px;border-radius:10px;position:relative}
+button{padding:8px;border:none;background:#2e7d32;color:#fff;border-radius:6px;margin-top:5px;cursor:pointer}
+.cart{position:fixed;top:20px;right:20px;background:#000;color:#fff;padding:10px;border-radius:10px}
+.admin{position:fixed;bottom:20px;left:20px;background:#000;color:#fff;padding:10px;border-radius:10px}
+.panel{display:none;padding:20px;background:#fff}
+.badge{position:absolute;top:10px;left:10px;background:red;color:#fff;padding:3px 6px;border-radius:5px;font-size:12px}
 </style>
 
 </head>
@@ -23,12 +24,20 @@ input{padding:6px;margin:5px}
 <h2>🌰 Tane Kuruyemiş</h2>
 </header>
 
-<div class="products" id="products"></div>
-
+<div class="cart" onclick="toggleCart()">🛒 Sepet (<span id="count">0</span>)</div>
 <button class="admin" onclick="toggleAdmin()">Admin</button>
 
-<div class="panel" id="panel">
-<h3>Ürün ekle</h3>
+<div class="products" id="products"></div>
+
+<div id="cartPanel" class="panel">
+<h3>Sepet</h3>
+<div id="cartItems"></div>
+<h4 id="total"></h4>
+<button onclick="checkout()">Siparişi Gönder</button>
+</div>
+
+<div id="adminPanel" class="panel">
+<h3>Ürün Ekle</h3>
 <input id="name" placeholder="Ürün adı">
 <input id="price" placeholder="Fiyat">
 <input id="img" placeholder="Resim URL">
@@ -40,38 +49,83 @@ input{padding:6px;margin:5px}
 
 <script type="module">
 
-// 🔥 SENİN KODDAN AYIKLADIM
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
 import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
 
-// ✅ SADECE GEREKEN CONFIG
 const firebaseConfig = {
   apiKey: "AIzaSyCz19no8y3VQroeNWkIGLTENinm781t6Ss",
   authDomain: "taneduragi.firebaseapp.com",
   projectId: "taneduragi"
 };
 
-// başlat
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+let cart = [];
+
 // ürünleri çek
 const productsRef = collection(db,"products");
-
 onSnapshot(productsRef,(snap)=>{
  let html="";
  snap.forEach(doc=>{
   let p=doc.data();
   html+=`
   <div class="card">
+    <div class="badge">İndirim</div>
     <img src="${p.img}" width="100%">
     <h3>${p.name}</h3>
     <p>${p.price}₺</p>
-    <button onclick="order('${p.name}',${p.price})">Sipariş</button>
+    <button onclick="addToCart('${p.name}',${p.price})">Sepete ekle</button>
   </div>`;
  });
  document.getElementById("products").innerHTML=html;
 });
+
+// sepete ekle
+window.addToCart = function(name,price){
+ cart.push({name,price});
+ document.getElementById("count").innerText=cart.length;
+}
+
+// sepet aç/kapat
+window.toggleCart = function(){
+ let p=document.getElementById("cartPanel");
+ p.style.display = p.style.display==="block"?"none":"block";
+ renderCart();
+}
+
+// sepeti çiz
+function renderCart(){
+ let html="";
+ let total=0;
+ cart.forEach((i,index)=>{
+  total+=i.price;
+  html+=`<div>${i.name} - ${i.price}₺</div>`;
+ });
+ document.getElementById("cartItems").innerHTML=html;
+ document.getElementById("total").innerText="Toplam: "+total+"₺";
+}
+
+// sipariş gönder
+const ordersRef = collection(db,"orders");
+
+window.checkout = async function(){
+ await addDoc(ordersRef,{
+  items:cart,
+  total:cart.reduce((a,b)=>a+b.price,0),
+  date:Date.now()
+ });
+ alert("Sipariş gönderildi");
+ cart=[];
+ document.getElementById("count").innerText=0;
+ renderCart();
+}
+
+// admin panel
+window.toggleAdmin = function(){
+ let p=document.getElementById("adminPanel");
+ p.style.display = p.style.display==="block"?"none":"block";
+}
 
 // ürün ekle
 window.addProduct = async function(){
@@ -82,29 +136,15 @@ window.addProduct = async function(){
  });
 }
 
-// sipariş ver
-const ordersRef = collection(db,"orders");
-
-window.order = async function(name,price){
- await addDoc(ordersRef,{name,price});
- alert("Sipariş gönderildi");
-}
-
 // siparişleri göster
 onSnapshot(ordersRef,(snap)=>{
  let html="";
  snap.forEach(doc=>{
   let o=doc.data();
-  html+=`<div>${o.name} - ${o.price}₺</div>`;
+  html+=`<div>🧾 ${o.items.length} ürün - ${o.total}₺</div>`;
  });
  document.getElementById("orders").innerHTML=html;
 });
-
-// admin panel
-window.toggleAdmin = function(){
- let p=document.getElementById("panel");
- p.style.display = p.style.display==="block"?"none":"block";
-}
 
 </script>
 
