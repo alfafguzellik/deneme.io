@@ -1,84 +1,194 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Araç Kiralama</title>
-  <style>
-    body { font-family: Arial; margin: 0; background: #f4f4f4; }
-    header { background: #333; color: #fff; padding: 15px; text-align: center; }
-    .container { padding: 20px; }
-    .cars { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px,1fr)); gap: 20px; }
-    .car { background: #fff; padding: 15px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-    .car img { width: 100%; border-radius: 10px; }
-    button { background: #28a745; color: white; border: none; padding: 10px; margin-top: 10px; cursor: pointer; border-radius: 5px; }
-    button:hover { background: #218838; }
-    .form { margin-top: 20px; background: #fff; padding: 20px; border-radius: 10px; }
-    input, select { width: 100%; padding: 10px; margin: 10px 0; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Araç Kiralama</title>
+
+<style>
+body {
+  font-family: Arial;
+  margin: 0;
+  background: #f4f4f4;
+}
+
+header {
+  background: #222;
+  color: #fff;
+  padding: 20px;
+  text-align: center;
+}
+
+.container {
+  padding: 20px;
+}
+
+.cars {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px,1fr));
+  gap: 20px;
+}
+
+.car {
+  background: #fff;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  transition: 0.3s;
+}
+
+.car:hover {
+  transform: scale(1.03);
+}
+
+.car img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+button {
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 10px;
+  margin-top: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  width: 100%;
+}
+
+button:hover {
+  background: #218838;
+}
+
+.form {
+  margin-top: 30px;
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+input, select {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+}
+</style>
 </head>
+
 <body>
 
 <header>
-  <h1>Araç Kiralama Sistemi</h1>
+  <h1>🚗 Araç Kiralama Sistemi</h1>
 </header>
 
 <div class="container">
 
-  <h2>Araçlar</h2>
-  <div class="cars" id="carList"></div>
+<h2>Uygun Fiyatlı Araçlar</h2>
+<div class="cars" id="carList"></div>
 
-  <div class="form">
-    <h2>Kiralama Formu</h2>
-    <input type="text" id="name" placeholder="Adınız">
-    <select id="carSelect"></select>
-    <input type="date" id="startDate">
-    <input type="date" id="endDate">
-    <button onclick="rentCar()">Kirala</button>
-    <p id="result"></p>
-  </div>
+<div class="form">
+  <h2>Kiralama Formu</h2>
+  <input type="text" id="name" placeholder="Adınız">
+  <select id="carSelect"></select>
+  <input type="date" id="startDate">
+  <input type="date" id="endDate">
+  <button onclick="rentCar()">Kirala</button>
+  <p id="result"></p>
+</div>
 
 </div>
 
 <script>
-  const cars = [
-    { id: 1, name: "BMW 3.20", price: 1500, img: "https://via.placeholder.com/300" },
-    { id: 2, name: "Mercedes C200", price: 1700, img: "https://via.placeholder.com/300" },
-    { id: 3, name: "Renault Clio", price: 900, img: "https://via.placeholder.com/300" }
-  ];
+const cars = [
+  {
+    id: 1,
+    name: "Renault Clio",
+    price: 700,
+    img: "https://upload.wikimedia.org/wikipedia/commons/1/1e/Renault_Clio_V.jpg"
+  },
+  {
+    id: 2,
+    name: "Fiat Egea",
+    price: 750,
+    img: "https://upload.wikimedia.org/wikipedia/commons/8/8d/Fiat_Egea_Sedan.jpg"
+  },
+  {
+    id: 3,
+    name: "Hyundai i20",
+    price: 720,
+    img: "https://upload.wikimedia.org/wikipedia/commons/6/65/Hyundai_i20_2020.jpg"
+  },
+  {
+    id: 4,
+    name: "Toyota Corolla",
+    price: 900,
+    img: "https://upload.wikimedia.org/wikipedia/commons/9/9d/Toyota_Corolla_2019.jpg"
+  },
+  {
+    id: 5,
+    name: "Volkswagen Polo",
+    price: 800,
+    img: "https://upload.wikimedia.org/wikipedia/commons/5/5d/VW_Polo_2018.jpg"
+  },
+  {
+    id: 6,
+    name: "Dacia Sandero",
+    price: 650,
+    img: "https://upload.wikimedia.org/wikipedia/commons/f/f7/Dacia_Sandero_2021.jpg"
+  }
+];
 
-  const carList = document.getElementById("carList");
-  const carSelect = document.getElementById("carSelect");
+const carList = document.getElementById("carList");
+const carSelect = document.getElementById("carSelect");
 
-  function loadCars() {
-    cars.forEach(car => {
-      carList.innerHTML += `
-        <div class="car">
-          <img src="${car.img}">
-          <h3>${car.name}</h3>
-          <p>${car.price} TL / gün</p>
-        </div>
-      `;
+function loadCars() {
+  cars.forEach(car => {
+    carList.innerHTML += `
+      <div class="car">
+        <img src="${car.img}">
+        <h3>${car.name}</h3>
+        <p>${car.price} TL / gün</p>
+      </div>
+    `;
 
-      carSelect.innerHTML += `<option value="${car.name}">${car.name}</option>`;
-    });
+    carSelect.innerHTML += `
+      <option value="${car.id}">
+        ${car.name} - ${car.price} TL
+      </option>
+    `;
+  });
+}
+
+function rentCar() {
+  const name = document.getElementById("name").value;
+  const carId = carSelect.value;
+  const start = new Date(document.getElementById("startDate").value);
+  const end = new Date(document.getElementById("endDate").value);
+
+  if (!name || !start || !end || isNaN(start) || isNaN(end)) {
+    document.getElementById("result").innerText = "Lütfen tüm alanları doldurun!";
+    return;
   }
 
-  function rentCar() {
-    const name = document.getElementById("name").value;
-    const car = carSelect.value;
-    const start = document.getElementById("startDate").value;
-    const end = document.getElementById("endDate").value;
+  const selectedCar = cars.find(c => c.id == carId);
 
-    if (!name || !start || !end) {
-      document.getElementById("result").innerText = "Lütfen tüm alanları doldurun";
-      return;
-    }
+  const days = (end - start) / (1000 * 60 * 60 * 24);
 
-    document.getElementById("result").innerText = `${name}, ${car} aracını ${start} - ${end} tarihleri arasında kiraladınız.`;
+  if (days <= 0) {
+    document.getElementById("result").innerText = "Geçerli tarih giriniz!";
+    return;
   }
 
-  loadCars();
+  const total = days * selectedCar.price;
+
+  document.getElementById("result").innerText =
+    `${name}, ${selectedCar.name} aracını ${days} günlüğüne kiraladınız. Toplam: ${total} TL`;
+}
+
+loadCars();
 </script>
 
 </body>
