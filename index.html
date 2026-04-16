@@ -12,9 +12,8 @@ header{background:#1b5e20;color:#fff;padding:20px;text-align:center}
 .card{background:#fff;padding:15px;border-radius:12px;box-shadow:0 5px 15px rgba(0,0,0,0.1)}
 button{padding:8px;border:none;background:#2e7d32;color:#fff;border-radius:6px;margin-top:5px;cursor:pointer}
 .cart{position:fixed;top:20px;right:20px;background:#000;color:#fff;padding:10px;border-radius:10px}
-.admin{position:fixed;bottom:20px;left:20px;background:#000;color:#fff;padding:10px;border-radius:10px}
 .panel{display:none;padding:20px;background:#fff}
-input{padding:6px;margin:5px}
+img{border-radius:10px}
 </style>
 
 </head>
@@ -25,7 +24,6 @@ input{padding:6px;margin:5px}
 </header>
 
 <div class="cart" onclick="toggleCart()">🛒 Sepet (<span id="count">0</span>)</div>
-<button class="admin" onclick="adminLogin()">Admin</button>
 
 <div class="products" id="products"></div>
 
@@ -33,43 +31,26 @@ input{padding:6px;margin:5px}
 <h3>Sepet</h3>
 <div id="cartItems"></div>
 <h4 id="total"></h4>
-<button onclick="checkout()">Firebase Sipariş</button>
 <button onclick="sendWhatsApp()">WhatsApp Sipariş</button>
 </div>
 
-<div id="adminPanel" class="panel">
-<h3>Ürün Ekle</h3>
-<input id="name" placeholder="Ürün adı">
-<input id="price" placeholder="Fiyat">
-<input id="img" placeholder="Resim URL">
-<button onclick="addProduct()">Ekle</button>
+<script>
 
-<h3>Siparişler</h3>
-<div id="orders"></div>
-</div>
+// 🔥 ÜRÜNLER BURADA (İSTEDİĞİN GİBİ DEĞİŞTİR)
+const products = [
+ {name:"Antep Fıstığı",price:150,img:"https://i.imgur.com/8Km9tLL.jpg"},
+ {name:"Badem",price:120,img:"https://i.imgur.com/j6y7s3x.jpg"},
+ {name:"Fındık",price:130,img:"https://i.imgur.com/5Aqgz7o.jpg"},
+ {name:"Kaju",price:140,img:"https://i.imgur.com/2nCt3Sb.jpg"},
+ {name:"Karışık Kuruyemiş",price:160,img:"https://i.imgur.com/9M6XG3H.jpg"}
+];
 
-<script type="module">
+let cart=[];
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
-import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyCz19no8y3VQroeNWkIGLTENinm781t6Ss",
-  authDomain: "taneduragi.firebaseapp.com",
-  projectId: "taneduragi"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-let cart = [];
-
-// ürünleri çek
-const productsRef = collection(db,"products");
-onSnapshot(productsRef,(snap)=>{
+// ürünleri bas
+function loadProducts(){
  let html="";
- snap.forEach(doc=>{
-  let p=doc.data();
+ products.forEach(p=>{
   html+=`
   <div class="card">
     <img src="${p.img}" width="100%">
@@ -79,21 +60,22 @@ onSnapshot(productsRef,(snap)=>{
   </div>`;
  });
  document.getElementById("products").innerHTML=html;
-});
+}
 
 // sepete ekle
-window.addToCart = function(name,price){
+function addToCart(name,price){
  cart.push({name,price});
  document.getElementById("count").innerText=cart.length;
 }
 
-// sepet
-window.toggleCart = function(){
+// sepet aç/kapat
+function toggleCart(){
  let p=document.getElementById("cartPanel");
  p.style.display = p.style.display==="block"?"none":"block";
  renderCart();
 }
 
+// sepet çiz
 function renderCart(){
  let html="";
  let total=0;
@@ -105,22 +87,8 @@ function renderCart(){
  document.getElementById("total").innerText="Toplam: "+total+"₺";
 }
 
-// sipariş firebase
-const ordersRef = collection(db,"orders");
-
-window.checkout = async function(){
- await addDoc(ordersRef,{
-  items:cart,
-  total:cart.reduce((a,b)=>a+b.price,0)
- });
- alert("Sipariş gönderildi");
- cart=[];
- document.getElementById("count").innerText=0;
- renderCart();
-}
-
 // WhatsApp sipariş
-window.sendWhatsApp = function(){
+function sendWhatsApp(){
  let text="Sipariş:\\n";
  cart.forEach(i=>{
   text += i.name+" - "+i.price+"₺\\n";
@@ -129,34 +97,8 @@ window.sendWhatsApp = function(){
  window.open("https://wa.me/905330126971?text="+encodeURIComponent(text));
 }
 
-// ADMIN ŞİFRE
-window.adminLogin = function(){
- let pass = prompt("Admin şifre:");
- if(pass==="1234"){
-  document.getElementById("adminPanel").style.display="block";
- }else{
-  alert("Yanlış şifre");
- }
-}
-
-// ürün ekle
-window.addProduct = async function(){
- await addDoc(productsRef,{
-  name:document.getElementById("name").value,
-  price:Number(document.getElementById("price").value),
-  img:document.getElementById("img").value
- });
-}
-
-// siparişleri göster
-onSnapshot(ordersRef,(snap)=>{
- let html="";
- snap.forEach(doc=>{
-  let o=doc.data();
-  html+=`<div>🧾 ${o.items.length} ürün - ${o.total}₺</div>`;
- });
- document.getElementById("orders").innerHTML=html;
-});
+// başlat
+loadProducts();
 
 </script>
 
