@@ -17,52 +17,27 @@ header{
  color:#fff;
  padding:20px;
  display:flex;
- align-items:center;
  justify-content:space-between;
+ align-items:center;
 }
 
-/* LOGO */
-.logo{
- display:flex;
- align-items:center;
+.logo{display:flex;align-items:center;gap:10px}
+.logo img{width:55px;height:55px;border-radius:50%;border:3px solid #fff}
+.insta{background:#fff;color:#1b5e20;padding:8px 12px;border-radius:20px;text-decoration:none}
+
+/* FİLTRE ALANI */
+.filters{
+ padding:15px;
+ display:grid;
+ grid-template-columns:1fr 1fr 1fr 1fr;
  gap:10px;
 }
 
-.logo img{
- width:55px;
- height:55px;
- border-radius:50%;
- border:3px solid #fff;
- object-fit:cover;
-}
-
-.logo span{
- font-weight:700;
- font-size:18px;
-}
-
-/* INSTAGRAM */
-.insta{
- background:#fff;
- color:#1b5e20;
- padding:8px 12px;
- border-radius:20px;
- text-decoration:none;
- font-size:14px;
- font-weight:500;
-}
-
-/* SEPET */
-.cart{
- position:fixed;
- top:20px;
- right:20px;
- background:#000;
- color:#fff;
- padding:10px 15px;
- border-radius:30px;
- cursor:pointer;
- z-index:999;
+.filters input, .filters select{
+ padding:10px;
+ border-radius:10px;
+ border:1px solid #ccc;
+ width:100%;
 }
 
 /* GRID */
@@ -73,36 +48,26 @@ header{
  padding:20px;
 }
 
-/* CARD */
 .card{
  background:#fff;
  border-radius:15px;
  overflow:hidden;
  box-shadow:0 10px 25px rgba(0,0,0,0.1);
- transition:.3s;
  position:relative;
 }
-.card:hover{transform:translateY(-5px)}
-
 .card img{width:100%;height:180px;object-fit:cover}
-
 .card-content{padding:15px}
 
-.price{font-weight:bold;color:#2e7d32;margin-top:5px}
-
-/* BADGE */
 .badge{
  position:absolute;
  top:10px;
  left:10px;
- background:#ff3d00;
+ background:red;
  color:#fff;
  padding:4px 8px;
- border-radius:8px;
- font-size:12px;
+ border-radius:6px;
 }
 
-/* BUTTON */
 button{
  width:100%;
  padding:10px;
@@ -114,44 +79,26 @@ button{
  cursor:pointer;
 }
 
-/* SEPET PANEL */
+/* SEPET */
+.cart{
+ position:fixed;
+ bottom:20px;
+ right:20px;
+ background:#000;
+ color:#fff;
+ padding:12px 18px;
+ border-radius:30px;
+ cursor:pointer;
+}
+
 .panel{
  position:fixed;
  bottom:0;
- left:0;
  width:100%;
  background:#fff;
  padding:20px;
  display:none;
- border-top-left-radius:20px;
- border-top-right-radius:20px;
- box-shadow:0 -5px 15px rgba(0,0,0,0.2);
-}
-
-/* YORUMLAR */
-.reviews{
- overflow:hidden;
- white-space:nowrap;
- background:#fff;
- padding:10px;
- margin:10px;
- border-radius:10px;
-}
-
-.review-track{
- display:inline-block;
- animation:scroll 15s linear infinite;
-}
-
-.review{
- display:inline-block;
- margin-right:50px;
- font-size:14px;
-}
-
-@keyframes scroll{
- 0%{transform:translateX(0)}
- 100%{transform:translateX(-100%)}
+ border-radius:20px 20px 0 0;
 }
 
 </style>
@@ -159,25 +106,30 @@ button{
 <body>
 
 <header>
-  <div class="logo">
-    <img src="logo.png">
-    <span>Tane Kuruyemiş</span>
-  </div>
-  <a class="insta" href="https://www.instagram.com/taneduragi/" target="_blank">Instagram</a>
+<div class="logo">
+<img src="logo.png">
+<b>Tane Kuruyemiş</b>
+</div>
+<a class="insta" href="https://www.instagram.com/taneduragi/" target="_blank">Instagram</a>
 </header>
 
-<div class="cart" onclick="toggleCart()">🛒 (<span id="count">0</span>)</div>
-
-<div class="reviews">
- <div class="review-track">
-  <span class="review">⭐ Çok hızlı geldi!</span>
-  <span class="review">⭐ Karışık paket mükemmel</span>
-  <span class="review">⭐ Sürekli buradan alıyorum</span>
-  <span class="review">⭐ Taze ve kaliteli</span>
- </div>
+<!-- FİLTRE -->
+<div class="filters">
+<input type="text" id="search" placeholder="Ürün ara..." onkeyup="filterProducts()">
+<select id="category" onchange="filterProducts()">
+<option value="">Kategori</option>
+<option value="fistik">Fıstık</option>
+<option value="badem">Badem</option>
+<option value="findik">Fındık</option>
+<option value="kaju">Kaju</option>
+</select>
+<input type="number" id="min" placeholder="Min ₺" onkeyup="filterProducts()">
+<input type="number" id="max" placeholder="Max ₺" onkeyup="filterProducts()">
 </div>
 
 <div class="products" id="products"></div>
+
+<div class="cart" onclick="toggleCart()">🛒 (<span id="count">0</span>)</div>
 
 <div class="panel" id="cartPanel">
 <h3>Sepet</h3>
@@ -189,24 +141,25 @@ button{
 <script>
 
 const products = [
- {name:"Antep Fıstığı",price:150,img:"https://i.imgur.com/8Km9tLL.jpg"},
- {name:"Badem",price:120,img:"https://i.imgur.com/j6y7s3x.jpg"},
- {name:"Fındık",price:130,img:"https://i.imgur.com/5Aqgz7o.jpg"},
- {name:"Kaju",price:140,img:"https://i.imgur.com/2nCt3Sb.jpg"}
+ {name:"Antep Fıstığı",price:150,cat:"fistik",img:"https://i.imgur.com/8Km9tLL.jpg"},
+ {name:"Badem",price:120,cat:"badem",img:"https://i.imgur.com/j6y7s3x.jpg"},
+ {name:"Fındık",price:130,cat:"findik",img:"https://i.imgur.com/5Aqgz7o.jpg"},
+ {name:"Kaju",price:140,cat:"kaju",img:"https://i.imgur.com/2nCt3Sb.jpg"}
 ];
 
 let cart=[];
 
-function loadProducts(){
+// ÜRÜN YÜKLE
+function loadProducts(list=products){
  let html="";
- products.forEach(p=>{
+ list.forEach(p=>{
   html+=`
   <div class="card">
     <div class="badge">İndirim</div>
     <img src="${p.img}">
     <div class="card-content">
       <h3>${p.name}</h3>
-      <div class="price">${p.price}₺</div>
+      <p>${p.price}₺</p>
       <button onclick="addToCart('${p.name}',${p.price})">Sepete ekle</button>
     </div>
   </div>`;
@@ -214,6 +167,24 @@ function loadProducts(){
  document.getElementById("products").innerHTML=html;
 }
 
+// 🔥 FİLTRE SİSTEMİ
+function filterProducts(){
+ let search = document.getElementById("search").value.toLowerCase();
+ let cat = document.getElementById("category").value;
+ let min = document.getElementById("min").value;
+ let max = document.getElementById("max").value;
+
+ let filtered = products.filter(p=>{
+  return p.name.toLowerCase().includes(search) &&
+         (cat==="" || p.cat===cat) &&
+         (min==="" || p.price >= min) &&
+         (max==="" || p.price <= max);
+ });
+
+ loadProducts(filtered);
+}
+
+// 🛒
 function addToCart(name,price){
  cart.push({name,price});
  document.getElementById("count").innerText=cart.length;
