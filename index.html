@@ -5,23 +5,34 @@
 <title>Tane Kuruyemiş</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
 
 <style>
-
-body{font-family:'Poppins',sans-serif;margin:0;background:#f4f4f4}
-
-header{background:#2e7d32;color:#fff;padding:15px;font-size:18px}
-
-.search{
- padding:10px;
+body{
+ margin:0;
+ background:#f4f4f4;
+ font-family:'Inter',sans-serif;
+ -webkit-font-smoothing:antialiased;
 }
 
+h1,h2,h3,b{
+ font-family:'Poppins',sans-serif;
+}
+
+header{
+ background:#2e7d32;
+ color:#fff;
+ padding:15px;
+ font-size:18px;
+}
+
+.search{padding:10px}
 .search input{
  width:100%;
  padding:10px;
  border:none;
  border-radius:8px;
+ outline:none;
 }
 
 .categories{
@@ -39,7 +50,10 @@ header{background:#2e7d32;color:#fff;padding:15px;font-size:18px}
  white-space:nowrap;
 }
 
-.active{background:#2e7d32;color:#fff}
+.active{
+ background:#2e7d32;
+ color:#fff;
+}
 
 .products{
  display:grid;
@@ -61,6 +75,7 @@ header{background:#2e7d32;color:#fff;padding:15px;font-size:18px}
  height:120px;
  object-fit:cover;
  border-radius:10px;
+ display:block;
 }
 
 .cartBox{
@@ -86,9 +101,9 @@ header{background:#2e7d32;color:#fff;padding:15px;font-size:18px}
  padding:3px 6px;
  border-radius:50%;
 }
-
 </style>
 </head>
+
 <body>
 
 <header><b>Tane Kuruyemiş</b></header>
@@ -98,7 +113,6 @@ header{background:#2e7d32;color:#fff;padding:15px;font-size:18px}
 </div>
 
 <div class="categories" id="cats"></div>
-
 <div class="products" id="products"></div>
 
 <div class="cartBox" onclick="goCart()">
@@ -115,7 +129,6 @@ const products=[
 ];
 
 let currentCat="Tümü";
-let filtered=[...products];
 
 function loadCats(){
  let cats=["Tümü",...new Set(products.map(p=>p.cat))];
@@ -136,17 +149,17 @@ function search(val){
 }
 
 function filter(val=""){
- filtered=products.filter(p=>{
+ let filtered=products.filter(p=>{
   return (currentCat=="Tümü"||p.cat==currentCat) &&
          p.name.toLowerCase().includes(val.toLowerCase());
  });
- render();
+ render(filtered);
  loadCats();
 }
 
-function render(){
+function render(list){
  let html="";
- filtered.forEach(p=>{
+ list.forEach(p=>{
   html+=`
   <div class="card" onclick="goProduct(${p.id})">
     <img src="${p.img}">
@@ -174,7 +187,7 @@ function goCart(){
 }
 
 loadCats();
-render();
+render(products);
 updateCartCount();
 
 </script>
