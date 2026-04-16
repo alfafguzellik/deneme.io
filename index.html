@@ -5,12 +5,62 @@
 <title>Tane Kuruyemiş</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-body{font-family:sans-serif;background:#f4f4f4}
-header{background:#2e7d32;color:#fff;padding:15px;display:flex;justify-content:space-between}
-.products{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;padding:20px}
-.card{background:#fff;padding:10px;border-radius:10px;cursor:pointer}
-.card img{width:100%;height:150px;object-fit:cover}
-.cart{position:fixed;top:20px;right:20px;background:#000;color:#fff;padding:10px;border-radius:20px;cursor:pointer}
+
+body{
+ font-family:sans-serif;
+ background:#f4f4f4;
+ margin:0;
+}
+
+header{
+ background:#2e7d32;
+ color:#fff;
+ padding:15px;
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ font-size:18px;
+}
+
+.products{
+ display:grid;
+ grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+ gap:15px;
+ padding:15px;
+}
+
+.card{
+ background:#fff;
+ padding:10px;
+ border-radius:12px;
+ cursor:pointer;
+ transition:.2s;
+ box-shadow:0 2px 5px rgba(0,0,0,0.1);
+}
+
+.card:hover{
+ transform:scale(1.03);
+}
+
+.card img{
+ width:100%;
+ height:130px;
+ object-fit:cover;
+ border-radius:10px;
+}
+
+.cart{
+ position:fixed;
+ bottom:20px;
+ right:20px;
+ background:#2e7d32;
+ color:#fff;
+ padding:12px;
+ border-radius:50%;
+ font-size:18px;
+ cursor:pointer;
+}
+
 </style>
 </head>
 <body>
@@ -24,6 +74,7 @@ header{background:#2e7d32;color:#fff;padding:15px;display:flex;justify-content:s
 <div class="products" id="products"></div>
 
 <script>
+
 const products=[
 {id:0,name:"Antep Fıstığı",price:150,img:"https://i.imgur.com/8Km9tLL.jpg",desc:"Taze fıstık"},
 {id:1,name:"Badem",price:120,img:"https://i.imgur.com/j6y7s3x.jpg",desc:"Doğal badem"}
@@ -53,6 +104,7 @@ function goCart(){
 
 const productsDiv=document.getElementById("products");
 load();
+
 </script>
 
 </body>
