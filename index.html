@@ -1,148 +1,70 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tane Kuruyemiş</title>
-<style>
-body {margin:0;font-family:Arial;background:#f5f5f5;}
-header {background:#2e7d32;color:#fff;padding:15px;text-align:center;}
-.container {padding:20px;}
-.products {display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;}
-.product {background:#fff;padding:15px;border-radius:15px;box-shadow:0 4px 10px rgba(0,0,0,0.1);transition:.3s;}
-.product:hover {transform:scale(1.03);} 
-button {background:#2e7d32;color:#fff;border:none;padding:10px;border-radius:8px;cursor:pointer;width:100%;}
-#cart {position:fixed;right:0;top:0;background:#fff;width:280px;height:100%;overflow:auto;box-shadow:-2px 0 10px rgba(0,0,0,0.2);padding:15px;}
-#loader {position:fixed;width:100%;height:100%;background:#fff;display:flex;flex-direction:column;justify-content:center;align-items:center;z-index:9999;animation:fadeOut 3s forwards 2s;}
-#loader img {width:200px;animation:scale 2s infinite alternate;}
-@keyframes scale {from{transform:scale(1);}to{transform:scale(1.1);}}
-@keyframes fadeOut {to{opacity:0;visibility:hidden;}}
-.hidden {display:none;}
-img {max-width:100%;border-radius:10px;}
-.search {width:100%;padding:12px;margin-bottom:20px;border-radius:8px;border:1px solid #ccc;}
-.modal {position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:none;justify-content:center;align-items:center;}
-.modal-content {background:#fff;padding:20px;border-radius:15px;width:90%;max-width:400px;}
-.gallery img {width:100%;cursor:zoom-in;}
-@media(max-width:768px){#cart{width:100%;height:auto;bottom:0;top:auto;}}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tane Kuruyemiş</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
+<!-- LOADER -->
 <div id="loader">
-<img src="/mnt/data/logo.png">
-<h2>Yükleniyor...</h2>
+  <img src="assets/logo.png">
+  <h2>Yükleniyor...</h2>
 </div>
 
+<!-- HEADER -->
 <header>
-<h1>Tane Kuruyemiş</h1>
+  <h1>Tane Kuruyemiş</h1>
 </header>
 
+<!-- ARAMA + ÜRÜNLER -->
 <div class="container">
-<input type="text" id="search" class="search" placeholder="Ürün ara...">
-<div class="products" id="productList"></div>
+  <input type="text" id="search" placeholder="Ürün ara...">
+  <div id="productList" class="products"></div>
 </div>
 
+<!-- SEPET -->
 <div id="cart">
-<h2>Sepet</h2>
-<ul id="cartItems"></ul>
-<p>Toplam: <span id="total">0</span>₺</p>
+  <h2>Sepet</h2>
+  <ul id="cartItems"></ul>
+  <p>Toplam: <span id="total">0</span>₺</p>
 </div>
 
-<div class="modal" id="quickView">
-<div class="modal-content">
-<h2 id="qName"></h2>
-<div class="gallery">
-<img id="qImg">
+<!-- QUICK VIEW (POPUP) -->
+<div id="modal" class="modal">
+  <div class="modal-content">
+    <h2 id="mName"></h2>
+    <img id="mImg">
+
+    <label>Gramaj:</label>
+    <select id="gram">
+      <option value="1">250g</option>
+      <option value="2">500g</option>
+      <option value="3">1kg</option>
+    </select>
+
+    <label>Tür:</label>
+    <select id="type">
+      <option>Çiğ</option>
+      <option>Kavrulmuş</option>
+      <option>Tuzlu</option>
+    </select>
+
+    <p>Fiyat: <span id="mPrice"></span>₺</p>
+
+    <button onclick="addToCart()">Sepete Ekle</button>
+    <button onclick="closeModal()">Kapat</button>
+  </div>
 </div>
-<select id="gram">
-<option value="1">250g</option>
-<option value="2">500g</option>
-<option value="3">1kg</option>
-</select>
-<select id="type">
-<option>Çiğ</option>
-<option>Kavrulmuş</option>
-<option>Tuzlu</option>
-</select>
-<p>Fiyat: <span id="qPrice"></span>₺</p>
-<button onclick="addToCartQuick()">Sepete Ekle</button>
-<button onclick="closeModal()">Kapat</button>
-</div>
-</div>
 
-<script>
-const products = [
- {id:1,name:"Fındık",basePrice:100,img:"https://via.placeholder.com/200"},
- {id:2,name:"Badem",basePrice:120,img:"https://via.placeholder.com/200"}
-];
-
-let cart = [];
-let currentProduct = null;
-
-function renderProducts(list) {
- const container = document.getElementById("productList");
- container.innerHTML = "";
- list.forEach(p => {
-  container.innerHTML += `
-  <div class="product">
-    <img src="${p.img}" loading="lazy">
-    <h3>${p.name}</h3>
-    <button onclick="openModal(${p.id})">Hızlı Gözat</button>
-  </div>`;
- });
-}
-
-function openModal(id){
- const p = products.find(x=>x.id===id);
- currentProduct = p;
- document.getElementById("qName").innerText = p.name;
- document.getElementById("qImg").src = p.img;
- updatePrice();
- document.getElementById("quickView").style.display = "flex";
-}
-
-function closeModal(){document.getElementById("quickView").style.display="none";}
-
-function updatePrice(){
- const gram = document.getElementById("gram").value;
- let price = currentProduct.basePrice * gram;
- document.getElementById("qPrice").innerText = price;
-}
-
-document.getElementById("gram").addEventListener("change",updatePrice);
-
-function addToCartQuick(){
- const gram = document.getElementById("gram").value;
- const type = document.getElementById("type").value;
- const price = currentProduct.basePrice * gram;
- cart.push({...currentProduct,price,gram,type});
- renderCart();
- closeModal();
-}
-
-function renderCart() {
- const list = document.getElementById("cartItems");
- list.innerHTML = "";
- let total = 0;
- cart.forEach((item,i)=>{
-  total += item.price;
-  list.innerHTML += `<li>${item.name} (${item.type}) - ${item.price}₺ <button onclick="removeFromCart(${i})">X</button></li>`;
- });
- document.getElementById("total").innerText = total;
-}
-
-function removeFromCart(i){cart.splice(i,1);renderCart();}
-
-// search
-search.addEventListener("input",()=>{
- const val = search.value.toLowerCase();
- renderProducts(products.filter(p=>p.name.toLowerCase().includes(val)));
-});
-
-window.onload = ()=>{
- renderProducts(products);
-};
-</script>
+<!-- JS DOSYALARI -->
+<script src="js/products.js"></script>
+<script src="js/cart.js"></script>
+<script src="js/app.js"></script>
 
 </body>
 </html>
