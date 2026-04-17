@@ -1,76 +1,18 @@
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-<meta charset="UTF-8">
-<title>Ürün</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
-
-<style>
-body{margin:0;padding:15px;background:#f4f4f4;font-family:'Inter'}
-h2,h3{font-family:'Poppins'}
-.container{background:#fff;padding:15px;border-radius:12px}
-img{width:100%;height:220px;object-fit:cover;border-radius:10px}
-button{width:100%;padding:12px;background:#2e7d32;color:#fff;border:none;margin-top:10px;border-radius:8px}
-.qtyBox{display:flex;gap:10px;align-items:center;margin-top:10px}
-.qtyBox button{width:40px;height:40px}
-.back{margin-bottom:10px;color:#2e7d32;cursor:pointer}
-</style>
-</head>
-
-<body>
-
-<div class="back" onclick="back()">← Geri</div>
-
-<div class="container">
-<img id="img">
-<h2 id="name"></h2>
-<p id="desc"></p>
-<h3 id="price"></h3>
-
-<div class="qtyBox">
-<button onclick="dec()">-</button>
-<h3 id="qty">1</h3>
-<button onclick="inc()">+</button>
-</div>
-
-<button onclick="addCart()">Sepete ekle</button>
-</div>
-
 <script>
 
-const products=[
-{id:0,name:"Antep Fıstığı",price:150,img:"https://i.imgur.com/8Km9tLL.jpg",desc:"Taze fıstık"},
-{id:1,name:"Badem",price:120,img:"https://i.imgur.com/j6y7s3x.jpg",desc:"Doğal badem"},
-{id:2,name:"Leblebi",price:80,img:"https://i.imgur.com/5jz9F8P.jpg",desc:"Sarı leblebi"}
-];
+/* SWIPE GERİ */
+let startX=0;
 
-let id=localStorage.getItem("product");
-let p=products[id];
-let q=1;
+document.addEventListener("touchstart",e=>{
+ startX=e.touches[0].clientX;
+});
 
-img.src=p.img;
-name.innerText=p.name;
-desc.innerText=p.desc;
-price.innerText=p.price+"₺";
+document.addEventListener("touchend",e=>{
+ let endX=e.changedTouches[0].clientX;
 
-function inc(){q++;qty.innerText=q;}
-function dec(){if(q>1){q--;qty.innerText=q;}}
-
-function addCart(){
- let cart=JSON.parse(localStorage.getItem("cart"))||[];
- let e=cart.find(x=>x.id==p.id);
- if(e){e.qty+=q}else{cart.push({...p,qty:q})}
- localStorage.setItem("cart",JSON.stringify(cart));
- alert("Sepete eklendi");
-}
-
-function back(){
- window.location="index.html";
-}
+ if(endX-startX>100){
+  back();
+ }
+});
 
 </script>
-
-</body>
-</html>
